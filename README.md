@@ -1,6 +1,6 @@
 # ng-smooth-carousel
 
-A smooth, customizable carousel component for Angular 17+ applications.
+A smooth, customizable carousel component for Angular 14+ applications.
 
 ## Features
 
