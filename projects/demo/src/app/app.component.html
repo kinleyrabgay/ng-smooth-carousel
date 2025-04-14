@@ -1,0 +1,26 @@
+<div
+  style="
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  "
+>
+  <p>Demo</p>
+  <div style="width: 800px;">
+    <ng-smooth-carousel [items]="items" [config]="carouselConfig">
+      <ng-template #carouselItem let-item let-i="index">
+        <div
+          class="custom-item"
+          [style]="
+            'display: flex; flex-direction: column; justify-content: center; align-items: center; width: 200px; height: 200px; background-color: lightblue; gap: 10px;'
+          "
+        >
+          {{ item.title }}
+          <button>Click me</button>
+        </div>
+      </ng-template>
+    </ng-smooth-carousel>
+  </div>
+</div>

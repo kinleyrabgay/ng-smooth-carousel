@@ -10,6 +10,11 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
+    "paths": {
+      "ng-smooth-carousel": [
+        "./dist/ng-smooth-carousel"
+      ]
+    },
     "esModuleInterop": true,
     "sourceMap": true,
     "declaration": false,
