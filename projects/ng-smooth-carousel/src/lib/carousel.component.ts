@@ -11,7 +11,7 @@ import {
   HostListener,
   OnInit,
 } from '@angular/core';
-import { CarouselConfig } from '../../models/carousel-config.interface';
+import { CarouselConfig } from './carousel-config.interface';
 import { Subject, fromEvent } from 'rxjs';
 import { takeUntil, debounceTime } from 'rxjs/operators';
 

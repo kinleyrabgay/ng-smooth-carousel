@@ -1,17 +1,19 @@
 # ng-smooth-carousel
 
-A smooth, flexible, and customizable carousel component for Angular 14+.
+A smooth, customizable carousel component for Angular 14+ applications.
 
 ## Features
 
-- Fully customizable item templates using ng-template
-- Dynamic configuration for container and item dimensions
-- Responsive design with breakpoints support
-- Customizable navigation arrows
-- Smooth animations with configurable timing
-- Auto-play support
-- Touch-friendly
-- TypeScript support with full type definitions
+- 🎯 Smooth scrolling animation
+- 🔄 Vertical and horizontal orientation support
+- 🎨 Highly customizable navigation buttons and styling
+- 🔍 Built-in search functionality
+- 📱 Responsive design
+- ⚡ Efficient rendering with virtual scrolling
+- 🎮 Multiple navigation options
+- 🎯 Custom item templates
+- 🔄 Auto-play support
+- 🔄 Loop functionality
 
 ## Installation
 
@@ -21,115 +23,188 @@ npm install ng-smooth-carousel
 
 ## Usage
 
-1. Import the module in your app.module.ts:
+1. Import the `NgSmoothCarouselModule` in your module or component:
 
 ```typescript
 import { NgSmoothCarouselModule } from 'ng-smooth-carousel';
 
-@NgModule({
-  imports: [
-    NgSmoothCarouselModule
-  ]
+@Component({
+  // ...
+  imports: [NgSmoothCarouselModule],
+  // ...
 })
-export class AppModule { }
 ```
 
-2. Use the carousel in your component:
+2. Use the carousel component in your template:
+
+```html
+<ng-smooth-carousel [items]="items" [config]="carouselConfig">
+  <ng-template #carouselItem let-item>
+    <div class="custom-item">
+      {{ item.title }}
+    </div>
+  </ng-template>
+</ng-smooth-carousel>
+```
+
+## Configuration Example
+
+Here's a comprehensive example of the carousel configuration:
 
 ```typescript
-import { Component } from '@angular/core';
-import { CarouselConfig } from 'ng-smooth-carousel';
-
-@Component({
-  selector: 'app-root',
-  template: `
-    <nsc-carousel [items]="items" [config]="carouselConfig">
-      <ng-template #carouselItem let-item let-i="index">
-        <div class="custom-item">
-          {{ item.title }}
-        </div>
-      </ng-template>
-    </nsc-carousel>
-  `
-})
-export class AppComponent {
-  items = [
-    { title: 'Item 1' },
-    { title: 'Item 2' },
-    { title: 'Item 3' }
-  ];
-
-  carouselConfig: CarouselConfig = {
-    containerWidth: '100%',
-    containerHeight: '300px',
-    itemWidth: '200px',
-    itemHeight: '200px',
-    itemGap: '20px',
-    showNavigation: true,
-    navigationPosition: 'inside',
-    animationDuration: 300,
-    autoplay: true,
-    autoplayDelay: 3000
-  };
-}
+const carouselConfig: CarouselConfig = {
+  containerWidth: '100%',
+  containerHeight: '100%',
+  itemWidth: '200px',
+  itemHeight: '200px',
+  itemGap: '20px',
+  showNavigation: true,
+  animationDuration: '300ms',
+  scrollSize: '10xl',
+  enableSearch: true,
+  searchPlaceholder: 'Search...',
+  searchModalTitle: 'Search Items',
+  navigationStyle: {
+    buttonShape: 'circle', // 'circle' | 'rounded' | 'square'
+    nextButton: {
+      backgroundColor: 'red',
+      color: 'white',
+      border: 'none',
+      padding: '10px',
+      borderRadius: '4px',
+      width: '40px',
+      height: '40px',
+    },
+    prevButton: {
+      backgroundColor: 'blue',
+      color: 'white',
+      border: 'none',
+      padding: '10px',
+      borderRadius: '4px',
+      width: '40px',
+      height: '40px',
+    },
+    icons: {
+      next: 'N',
+      prev: 'P',
+    },
+  },
+};
 ```
 
 ## Configuration Options
 
-The carousel can be configured using the `CarouselConfig` interface:
+### Basic Configuration
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `containerWidth` | string | '100%' | Width of the carousel container |
+| `containerHeight` | string | 'auto' | Height of the carousel container |
+| `itemWidth` | string | '200px' | Width of each carousel item |
+| `itemHeight` | string | '100%' | Height of each carousel item |
+| `itemGap` | string | undefined | Gap between carousel items |
+| `showNavigation` | boolean | true | Show/hide navigation buttons |
+| `orientation` | 'horizontal' \| 'vertical' | 'horizontal' | Carousel orientation |
+| `animationDuration` | string | '300ms' | Duration of scroll animation |
+| `animationTiming` | string | 'ease' | Timing function for animation |
+
+### Navigation Configuration
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `navigationSize` | string | Size of navigation buttons area |
+| `navigationPadding` | string | Padding around navigation buttons |
+| `buttonShape` | 'circle' \| 'rounded' \| 'square' | Shape of navigation buttons |
+| `nextButton` | ButtonStyle | Styles for next button |
+| `prevButton` | ButtonStyle | Styles for previous button |
+| `icons` | NavigationIcons | Custom icons for buttons |
+
+### Search Configuration
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `enableSearch` | boolean | false | Enable/disable search functionality |
+| `searchPlaceholder` | string | 'Search...' | Placeholder text for search input |
+| `searchModalTitle` | string | 'Filter Items' | Title for search modal |
+| `searchStyle` | SearchStyle | undefined | Custom styles for search components |
+
+### Scroll Configuration
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `scrollSize` | ScrollSize | 'sm' | Amount to scroll per navigation click |
+| `loop` | boolean | false | Enable/disable infinite loop |
+| `autoplay` | boolean | false | Enable/disable autoplay |
+| `autoplayDelay` | string | '3000ms' | Delay between autoplay slides |
+
+## Types
 
 ```typescript
-interface CarouselConfig {
-  // Container configuration
-  containerWidth?: string;
-  containerHeight?: string;
-  
-  // Item configuration
-  itemWidth?: string;
-  itemHeight?: string;
-  itemGap?: string;
-  
-  // Navigation configuration
-  showNavigation?: boolean;
-  navigationPosition?: 'inside' | 'outside';
-  navigationStyle?: {
-    prevButton?: Partial<ButtonStyle>;
-    nextButton?: Partial<ButtonStyle>;
+type ScrollSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl' | '7xl' | '8xl' | '9xl' | '10xl';
+
+type ButtonShape = 'circle' | 'rounded' | 'square';
+
+interface ButtonStyle {
+  backgroundColor?: string;
+  color?: string;
+  border?: string;
+  padding?: string;
+  borderRadius?: string;
+  width?: string;
+  height?: string;
+  [key: string]: string | undefined;
+}
+
+interface NavigationIcons {
+  next?: string;
+  prev?: string;
+  search?: string;
+  vertical?: {
+    next?: string;
+    prev?: string;
   };
-  
-  // Animation configuration
-  animationDuration?: number;
-  animationTimingFunction?: string;
-  
-  // Behavior configuration
-  autoplay?: boolean;
-  autoplayDelay?: number;
-  loop?: boolean;
-  
-  // Responsive configuration
-  breakpoints?: {
-    [key: number]: Partial<CarouselConfig>;
-  };
+}
+
+interface SearchStyle {
+  button?: ButtonStyle;
+  modal?: Record<string, string>;
 }
 ```
 
-## Styling
+## Roadmap
 
-The carousel comes with minimal default styling that can be easily overridden using CSS classes:
+Here are the upcoming features and improvements planned for ng-smooth-carousel:
 
-```css
-.nsc-carousel-container {
-  /* Container styles */
-}
+### In Progress 🚧
+- 🔍 Enhanced Search Functionality
+  - Full-text search with highlighting
+  - Advanced filtering options
+  - Customizable search results display
+  - Search history and suggestions
 
-.nsc-carousel-item {
-  /* Item styles */
-}
-
-.nsc-carousel-nav {
-  /* Navigation button styles */
-}
-```
+### Coming Soon 🔜
+- 🎯 Touch and Swipe Gestures
+  - Smooth touch interactions
+  - Customizable swipe sensitivity
+  - Multi-touch support
+- ⌨️ Keyboard Navigation
+  - Arrow key navigation
+  - Keyboard shortcuts for common actions
+- 🌐 RTL (Right-to-Left) Support
+  - Full RTL layout support
+  - Automatic direction detection
+  - RTL-specific animations
+- ♿ Accessibility Improvements
+  - ARIA attributes
+  - Screen reader support
+  - Keyboard focus management
+- 🎨 Additional Features
+  - Multiple item selection
+  - Drag and drop reordering
+  - Custom transition effects
+  - Lazy loading improvements
+  - Thumbnail navigation option
+  - Dynamic item height support
 
 ## Contributing
 
@@ -137,4 +212,12 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-MIT
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+For support, please create an issue in the [GitHub repository](https://github.com/SELISE-Digital-Platform/ng-smooth-carousel/issues).
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a list of changes and updates.

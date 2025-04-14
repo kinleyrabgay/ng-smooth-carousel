@@ -3,5 +3,5 @@
  */
 
 export * from './lib/ng-smooth-carousel.module';
-export * from './lib/models/carousel-config.interface';
-export * from './lib/components/carousel/carousel.component';
+export * from './lib/carousel-config.interface';
+export * from './lib/carousel.component';

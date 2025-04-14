@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CarouselComponent } from './components/carousel/carousel.component';
+import { CarouselComponent } from './carousel.component';
 
 @NgModule({
   declarations: [
