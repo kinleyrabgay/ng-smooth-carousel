@@ -5,15 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.2] - 2025-04-15
+### Changed
+- Default navigation icons changed to chevron arrows (❮❯)
+- `showNavigation` now defaults to true and completely removes navigation buttons from DOM when false
+- Navigation buttons now properly disable at the start/end of content
+- Improved disabled button styling with not-allowed cursor
+- Added smooth transitions for button states
+- Fixed vertical mode navigation with proper icon rotation
+
+### Fixed
+- Navigation button states now correctly update when reaching content boundaries
+- Search dropdown positioning in vertical mode
+- Button hover effects in vertical orientation
 
 ### Added
-- Support for RTL (Right-to-Left) languages
-- Touch swipe gestures for mobile devices
 - Autoplay functionality with configurable delay
-- Accessibility improvements (ARIA labels and keyboard navigation)
+- Search functionality with filtering
+- Custom item templates
+- Responsive design
+- Loop functionality
 
-## [1.0.0] - 2024-03-27
+## [1.0.0] - 2025-04-14
 
 ### Added
 - New `itemsToShow` configuration option to control the number of visible items
@@ -34,7 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Container layout and spacing issues
 - TypeScript type definitions and interfaces
 
-## [0.1.0] - 2024-03-20
+## [0.1.0] - 2025-04-15
 
 ### Added
 - Initial release with basic carousel functionality
