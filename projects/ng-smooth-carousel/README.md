@@ -4,16 +4,15 @@ A smooth, customizable carousel component for Angular 14, supporting both vertic
 
 ## Features
 
-- 🎯 Smooth scrolling animation ✅
-- 🔄 Flexible orientation support (vertical & horizontal) ✅
-- 🎨 Highly customizable navigation buttons and styling ✅
-- 🔍 Built-in search functionality ✅
-- 📱 Responsive design ✅
-- ⚡ Efficient rendering with virtual scrolling ✅
-- 🎮 Multiple navigation options ✅
-- 🎯 Custom item templates ✅
-- 🔄 Auto-play support ✅
-- 🔄 Loop functionality ❌
+- 🎯 Smooth scrolling animation
+- 🔄 Flexible orientation support (vertical & horizontal)
+- 🎨 Highly customizable navigation buttons and styling
+- 🔍 Built-in search functionality
+- 📱 Responsive design
+- 🎮 Multiple navigation options
+- 🎯 Custom item templates
+- 🔄 Auto-play support
+- 🔄 Loop functionality
 
 ## Installation
 
@@ -38,21 +37,7 @@ import { NgSmoothCarouselModule } from 'ng-smooth-carousel';
 export class YourModule { }
 ```
 
-2. For standalone components:
-
-```typescript
-import { Component } from '@angular/core';
-import { NgSmoothCarouselModule } from 'ng-smooth-carousel';
-
-@Component({
-  // ...
-  standalone: true,
-  imports: [NgSmoothCarouselModule]
-})
-export class YourComponent { }
-```
-
-3. Use in your template:
+2. Use in your template:
 
 ```html
 <!-- Horizontal Carousel (Default) -->
@@ -74,7 +59,7 @@ export class YourComponent { }
 </nsc>
 ```
 
-4. Configure in your component:
+3. Configure in your component:
 
 ```typescript
 import { Component } from '@angular/core';
@@ -106,6 +91,7 @@ export class YourComponent {
     
     // Animation & Scroll
     animationDuration: '300ms',
+    animationTiming: 'ease',
     scrollSize: 'md',         // 'xs' to '10xl'
     
     // Features
@@ -126,6 +112,29 @@ export class YourComponent {
         backgroundColor: '#fff',
         color: '#333',
         border: '1px solid #ddd'
+      },
+      icons: {
+        next: '›',
+        prev: '‹',
+        search: '🔍',
+        vertical: {
+          next: '⌄',
+          prev: '⌃'
+        }
+      }
+    },
+    
+    // Search Configuration
+    searchPlaceholder: 'Search...',
+    searchModalTitle: 'Search Items',
+    searchStyle: {
+      button: {
+        backgroundColor: '#fff',
+        color: '#333'
+      },
+      modal: {
+        backgroundColor: '#fff',
+        boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
       }
     }
   };
@@ -142,11 +151,26 @@ export class YourComponent {
 | `containerHeight` | string | 'auto' | Height of the carousel container |
 | `itemWidth` | string | '200px' | Width of each carousel item |
 | `itemHeight` | string | '100%' | Height of each carousel item |
-| `itemGap` | string | undefined | Gap between carousel items |
+| `itemGap` | string | '0px' | Gap between carousel items |
 | `showNavigation` | boolean | true | Show/hide navigation buttons |
 | `orientation` | 'horizontal' \| 'vertical' | 'horizontal' | Carousel orientation |
 | `animationDuration` | string | '300ms' | Duration of scroll animation |
 | `animationTiming` | string | 'ease' | Timing function for animation |
+| `contentPadding` | string | '10px' | Padding for the content area |
+| `navigationSize` | string | '60px' | Size of navigation areas |
+| `navigationPadding` | string | '10px' | Padding for navigation areas |
+
+### Advanced Features
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `autoplay` | boolean | false | Enable autoplay |
+| `autoplayDelay` | string | '3000ms' | Delay between autoplay slides |
+| `loop` | boolean | false | Enable infinite loop |
+| `enableSearch` | boolean | false | Enable search functionality |
+| `searchPlaceholder` | string | 'Search...' | Placeholder text for search input |
+| `searchModalTitle` | string | 'Search Items' | Title for search modal |
+| `responsive` | boolean | true | Enable responsive behavior |
 
 ### Scroll Sizes
 
@@ -175,16 +199,16 @@ type ScrollSize =
 The `buttonShape` property in `navigationStyle` accepts:
 
 ```typescript
-type ButtonShape = 'circle' | 'rounded' | 'square';
+type NavButtonShape = 'circle' | 'rounded' | 'square';
 ```
 
-### Navigation Style Interface
+### NavigationStyle Interface
 
 ```typescript
 interface NavigationStyle {
-  buttonShape?: ButtonShape;
-  nextButton?: ButtonStyle;
-  prevButton?: ButtonStyle;
+  buttonShape?: NavButtonShape;
+  nextButton?: Record<string, string>;
+  prevButton?: Record<string, string>;
   icons?: {
     next?: string;
     prev?: string;
@@ -195,15 +219,28 @@ interface NavigationStyle {
     };
   };
 }
+```
 
+### ButtonStyle Interface
+
+```typescript
 interface ButtonStyle {
   backgroundColor?: string;
   color?: string;
-  border?: string;
+  borderRadius?: string;
   padding?: string;
-  width?: string;
-  height?: string;
-  [key: string]: string | undefined;
+  fontSize?: string;
+  border?: string;
+  boxShadow?: string;
+}
+```
+
+### SearchStyle Interface
+
+```typescript
+interface SearchStyle {
+  button?: Record<string, string>;
+  modal?: Record<string, string>;
 }
 ```
 
@@ -220,7 +257,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Support
 
@@ -228,4 +265,4 @@ For support, please create an issue in the [GitHub repository](https://github.co
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for a list of changes and updates.
+See CHANGELOG.md for a list of changes and updates.
