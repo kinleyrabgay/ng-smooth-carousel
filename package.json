@@ -20,7 +20,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build && rm -rf dist/ng-smooth-carousel/esm2022",
+    "postbuild": "rm -rf dist/ng-smooth-carousel/esm2022",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

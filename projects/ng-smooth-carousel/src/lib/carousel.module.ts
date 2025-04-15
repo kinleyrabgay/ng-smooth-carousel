@@ -5,10 +5,7 @@ import { CarouselComponent } from './carousel.component';
 
 @NgModule({
   declarations: [CarouselComponent],
-  imports: [
-    CommonModule,
-    FormsModule
-  ],
-  exports: [CarouselComponent]
+  imports: [CommonModule, FormsModule],
+  exports: [CarouselComponent],
 })
 export class NgSmoothCarouselModule {}
