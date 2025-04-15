@@ -15,29 +15,65 @@ import { CarouselConfig } from './carousel-config.interface';
 import { Subject, fromEvent } from 'rxjs';
 import { takeUntil, debounceTime } from 'rxjs/operators';
 
+/**
+ * A smooth, customizable carousel component for Angular applications.
+ * 
+ * @description
+ * This component provides a flexible carousel/slider with the following features:
+ * - Horizontal and vertical orientations
+ * - Customizable navigation buttons with different shapes and styles
+ * - Search functionality with filtering
+ * - Responsive design with configurable item sizes
+ * - Custom item templates
+ * - Autoplay with configurable delay
+ * - Loop functionality
+ * 
+ * @example
+ * ```html
+ * <nsc
+ *   [items]="items"
+ *   [config]="{
+ *     orientation: 'horizontal',
+ *     navigationStyle: {
+ *       buttonShape: 'rounded',
+ *       nextButton: { color: '#333' },
+ *       prevButton: { color: '#333' }
+ *     }
+ *   }">
+ *   <ng-template #carouselItem let-item>
+ *     {{ item }}
+ *   </ng-template>
+ * </nsc>
+ * ```
+ */
 @Component({
-  selector: 'ng-smooth-carousel',
+  selector: 'nsc',
   template: `
-    <div [class.vertical]="isVertical" [ngStyle]="containerStyles" class="nsc-carousel-container">
-      <div [style.--nav-size]="navigationSize" [style.--nav-padding]="navigationPadding" class="nsc-carousel-nav-area nsc-carousel-prev-area">
-        <div class="nsc-carousel-nav-group">
-          <div class="nsc-search-container" *ngIf="showSearch">
-            <button [ngStyle]="searchButtonStyles" (click)="toggleSearchModal()" class="nsc-carousel-nav nsc-carousel-search">
-              <span class="nav-icon" [ngStyle]="searchIconStyles">{{ searchIcon }}</span>
+    <div [class.nsc--vertical]="isVertical" [ngStyle]="containerStyles" class="nsc">
+      <div *ngIf="showNavigation" [style.--nav-size]="navigationSize" [style.--nav-padding]="navigationPadding" class="nsc__nav-area nsc__nav-area--prev">
+        <div class="nsc__nav-group">
+          <div class="nsc__search" *ngIf="showSearch">
+            <button [ngStyle]="searchButtonStyles" (click)="toggleSearchModal()" class="nsc__nav-button nsc__nav-button--search">
+              <span class="nsc__nav-icon" [ngStyle]="searchIconStyles">{{ searchIcon }}</span>
             </button>
-            <div *ngIf="isSearchModalOpen" [class.vertical]="isVertical" (click)="$event.stopPropagation()" class="nsc-search-dropdown" >
+            <div *ngIf="isSearchModalOpen" [class.nsc__dropdown--vertical]="isVertical" (click)="$event.stopPropagation()" class="nsc__dropdown" >
               <input
                 type="text"
                 [placeholder]="searchPlaceholder"
                 [(ngModel)]="searchQuery"
                 (keyup.enter)="applySearch()"
-                class="nsc-search-input"
+                class="nsc__search-input"
                 #searchInput
               />
             </div>
           </div>
-          <button [class.disabled]="!showPrevButton" [disabled]="!showPrevButton" [ngStyle]="prevButtonStyles" (click)="previous()" class="nsc-carousel-nav">
-            <span class="nav-icon" [ngStyle]="prevIconStyles">{{ prevIcon }}</span>
+          <button 
+            [class.nsc__nav-button--disabled]="!showPrevButton" 
+            [disabled]="!showPrevButton" 
+            [ngStyle]="prevButtonStyles" 
+            (click)="previous()" 
+            class="nsc__nav-button">
+            <span class="nsc__nav-icon" [ngStyle]="prevIconStyles">{{ prevIcon }}</span>
           </button>
         </div>
       </div>
@@ -45,22 +81,22 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
       <div
         #wrapper
         [style.--content-padding]="contentPadding"
-        class="nsc-carousel-wrapper">
+        class="nsc__wrapper">
         <div
           #track
           [ngStyle]="trackStyles"
-          [class.vertical]="isVertical"
+          [class.nsc__track--vertical]="isVertical"
           [style.--animation-duration]="animationDuration"
           [style.--animation-timing]="animationTiming"
-          class="nsc-carousel-track">
+          class="nsc__track">
           <ng-container *ngIf="filteredItems.length > 0; else noResults">
             <ng-container *ngFor="let item of filteredItems; let i = index">
-              <div class="nsc-carousel-item" [ngStyle]="getItemStyle(i)">
+              <div class="nsc__item" [ngStyle]="getItemStyle(i)">
                 <ng-container *ngIf="itemTemplate; else defaultTemplate">
                   <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item, index: i }"></ng-container>
                 </ng-container>
                 <ng-template #defaultTemplate>
-                  <div class="nsc-carousel-default-item">
+                  <div class="nsc__item-default">
                     {{ item }}
                   </div>
                 </ng-template>
@@ -68,11 +104,11 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
             </ng-container>
           </ng-container>
           <ng-template #noResults>
-            <div class="nsc-carousel-item" [ngStyle]="getEmptyStateStyle()">
-              <div class="nsc-carousel-empty-state">
-                <div class="empty-icon">📭</div>
-                <div class="empty-text">No items found</div>
-                <button class="reset-search" (click)="resetSearch()">
+            <div class="nsc__item" [ngStyle]="getEmptyStateStyle()">
+              <div class="nsc__empty-state">
+                <div class="nsc__empty-icon">📭</div>
+                <div class="nsc__empty-text">No items found</div>
+                <button class="nsc__reset-button" (click)="resetSearch()">
                   Show all items
                 </button>
               </div>
@@ -81,21 +117,21 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
         </div>
       </div>
 
-      <div [style.--nav-size]="navigationSize" [style.--nav-padding]="navigationPadding" class="nsc-carousel-nav-area nsc-carousel-next-area">
+      <div *ngIf="showNavigation" [style.--nav-size]="navigationSize" [style.--nav-padding]="navigationPadding" class="nsc__nav-area nsc__nav-area--next">
         <button
-          [class.disabled]="!showNextButton"
+          [class.nsc__nav-button--disabled]="!showNextButton"
           [disabled]="!showNextButton"
           [ngStyle]="nextButtonStyles"
           (click)="next()"
-          class="nsc-carousel-nav">
-          <span class="nav-icon" [ngStyle]="nextIconStyles">{{ nextIcon }}</span>
+          class="nsc__nav-button">
+          <span class="nsc__nav-icon" [ngStyle]="nextIconStyles">{{ nextIcon }}</span>
         </button>
       </div>
     </div>
   `,
   styles: [
     `
-      .nsc-carousel-container {
+      .nsc {
         position: relative;
         overflow: hidden;
         width: 100%;
@@ -103,11 +139,11 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
         align-items: stretch;
       }
 
-      .nsc-carousel-container.vertical {
+      .nsc--vertical {
         flex-direction: column;
       }
 
-      .nsc-carousel-nav-area {
+      .nsc__nav-area {
         flex: 0 0 var(--nav-size, 60px);
         position: relative;
         display: flex;
@@ -117,47 +153,46 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
         padding: 0 var(--nav-padding, 10px);
       }
 
-      .vertical .nsc-carousel-nav-area {
+      .nsc--vertical .nsc__nav-area {
         height: var(--nav-size, 60px);
         flex: 0 0 var(--nav-size, 60px);
         width: 100%;
         padding: var(--nav-padding, 10px) 0;
       }
 
-      .nsc-carousel-wrapper {
+      .nsc__wrapper {
         flex: 1;
         overflow: hidden;
         position: relative;
         padding: var(--content-padding, 10px) 0;
       }
 
-      .vertical .nsc-carousel-wrapper {
+      .nsc--vertical .nsc__wrapper {
         padding: 0 var(--content-padding, 10px);
       }
 
-      .nsc-carousel-track {
+      .nsc__track {
         display: flex;
         flex-wrap: nowrap;
-        transition: transform var(--animation-duration, 0.3s)
-          var(--animation-timing, ease);
+        transition: transform var(--animation-duration, 0.3s) var(--animation-timing, ease);
         width: fit-content;
       }
 
-      .nsc-carousel-track.vertical {
+      .nsc__track--vertical {
         flex-direction: column;
         width: 100%;
         height: fit-content;
       }
 
-      .nsc-carousel-item {
+      .nsc__item {
         flex: 0 0 auto;
       }
 
-      .vertical .nsc-carousel-item {
+      .nsc--vertical .nsc__item {
         width: 100%;
       }
 
-      .nsc-carousel-default-item {
+      .nsc__item-default {
         background: white;
         height: 100%;
         display: flex;
@@ -168,7 +203,7 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
         padding: 20px;
       }
 
-      .nsc-carousel-nav {
+      .nsc__nav-button {
         position: absolute;
         top: 50%;
         left: 50%;
@@ -188,7 +223,7 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
         z-index: 1;
       }
 
-      .nav-icon {
+      .nsc__nav-icon {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -198,16 +233,16 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
         line-height: 1;
       }
 
-      .nsc-carousel-nav:hover:not(.disabled) {
+      .nsc__nav-button:hover:not(.nsc__nav-button--disabled) {
         opacity: 0.8;
       }
 
-      .nsc-carousel-nav.disabled {
+      .nsc__nav-button--disabled {
         opacity: 0.4;
         cursor: not-allowed;
       }
 
-      .nsc-carousel-nav-group {
+      .nsc__nav-group {
         position: relative;
         display: flex;
         flex-direction: column;
@@ -216,37 +251,38 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
         height: 100%;
       }
 
-      .vertical .nsc-carousel-nav-group {
+      .nsc--vertical .nsc__nav-group {
         flex-direction: row;
         justify-content: center;
       }
 
-      .vertical .nsc-search-container {
+      .nsc--vertical .nsc__search {
         position: relative;
         bottom: auto;
         left: auto;
         transform: none;
-        margin-right: 8px;
+        margin-right: 16px;
       }
 
-      .vertical .nsc-carousel-nav {
+      .nsc--vertical .nsc__nav-button {
         position: static;
         transform: none;
       }
 
-      .nsc-search-container {
+      .nsc__search {
         position: absolute;
-        bottom: -40px;
+        bottom: 50px;
         left: 50%;
+        z-index: 1000;
         transform: translateX(-50%);
       }
 
-      .nsc-carousel-search {
+      .nsc__nav-button--search {
         position: static;
         transform: none;
       }
-
-      .nsc-search-dropdown {
+        
+      .nsc__dropdown {
         position: absolute;
         background: white;
         border: 1px solid #e0e0e0;
@@ -256,20 +292,19 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
         min-width: 200px;
       }
 
-      /* Position dropdown based on orientation */
-      .nsc-search-dropdown:not(.vertical) {
+      .nsc__dropdown:not(.nsc__dropdown--vertical) {
         left: 100%;
         top: 0;
         margin-left: 8px;
       }
 
-      .nsc-search-dropdown.vertical {
+      .nsc__dropdown--vertical {
         top: 100%;
         left: 0;
         margin-top: 8px;
       }
 
-      .nsc-search-input {
+      .nsc__search-input {
         width: 100%;
         padding: 8px 12px;
         border: none;
@@ -277,11 +312,11 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
         outline: none;
       }
 
-      .nsc-search-input:focus {
+      .nsc__search-input:focus {
         background: #f8f8f8;
       }
 
-      .nsc-carousel-empty-state {
+      .nsc__empty-state {
         height: 100%;
         width: 100%;
         display: flex;
@@ -291,19 +326,19 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
         gap: 12px;
       }
 
-      .empty-icon {
+      .nsc__empty-icon {
         font-size: 48px;
         color: #999;
         line-height: 1;
       }
 
-      .empty-text {
+      .nsc__empty-text {
         color: #666;
         font-size: 14px;
         margin: 0;
       }
 
-      .reset-search {
+      .nsc__reset-button {
         background: none;
         border: none;
         padding: 6px 12px;
@@ -313,7 +348,7 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
         transition: opacity 0.2s ease;
       }
 
-      .reset-search:hover {
+      .nsc__reset-button:hover {
         opacity: 0.7;
       }
     `,
@@ -501,56 +536,86 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
     this.checkOverflow();
   }
 
-  /** Get button shape styles based on configuration */
+  /**
+   * Gets the button shape styles based on configuration.
+   * @private
+   * @returns {Record<string, string>} The button shape styles
+   */
   private getButtonShapeStyles(): Record<string, string> {
     const shape = this.config.navigationStyle?.buttonShape;
+    
+    // If borderRadius is explicitly set in button styles, warn about conflict
+    if (this.config.navigationStyle?.nextButton?.['borderRadius'] || 
+        this.config.navigationStyle?.prevButton?.['borderRadius'] ||
+        this.config.searchStyle?.button?.['borderRadius']) {
+      console.warn('Both buttonShape and borderRadius are set. buttonShape will take precedence.');
+    }
+
     switch (shape) {
       case 'circle':
-        return {
-          borderRadius: '50%'
-        };
+        return { borderRadius: '50%' };
       case 'rounded':
-        return {
-          borderRadius: '8px'
-        };
+        return { borderRadius: '4px' };
       case 'square':
       default:
-        return {
-          borderRadius: '0'
-        };
+        return { borderRadius: '0' };
     }
   }
 
-  /** Get styles for next navigation button */
+  /**
+   * Gets the styles for the next navigation button.
+   * @returns {Record<string, string>} The button styles
+   */
   get nextButtonStyles(): Record<string, string> {
-    const buttonStyles = this.config.navigationStyle?.nextButton || {};
+    const buttonStyles = { ...(this.config.navigationStyle?.nextButton || {}) };
+    const shapeStyles = this.getButtonShapeStyles();
+    
+    // Remove borderRadius from buttonStyles if shape is specified
+    if (this.config.navigationStyle?.buttonShape && buttonStyles) {
+      delete buttonStyles['borderRadius'];
+    }
+
     return {
-      ...this.getButtonShapeStyles(),
-      ...buttonStyles,
-      // Ensure border-radius is applied last
-      borderRadius: this.config.navigationStyle?.buttonShape === 'circle' ? '50%' : buttonStyles['borderRadius'] || '0'
+      ...shapeStyles,
+      ...buttonStyles
     };
   }
 
-  /** Get styles for previous navigation button */
+  /**
+   * Gets the styles for the previous navigation button.
+   * @returns {Record<string, string>} The button styles
+   */
   get prevButtonStyles(): Record<string, string> {
-    const buttonStyles = this.config.navigationStyle?.prevButton || {};
+    const buttonStyles = { ...(this.config.navigationStyle?.prevButton || {}) };
+    const shapeStyles = this.getButtonShapeStyles();
+    
+    // Remove borderRadius from buttonStyles if shape is specified
+    if (this.config.navigationStyle?.buttonShape && buttonStyles) {
+      delete buttonStyles['borderRadius'];
+    }
+
     return {
-      ...this.getButtonShapeStyles(),
-      ...buttonStyles,
-      // Ensure border-radius is applied last
-      borderRadius: this.config.navigationStyle?.buttonShape === 'circle' ? '50%' : buttonStyles['borderRadius'] || '0'
+      ...shapeStyles,
+      ...buttonStyles
     };
   }
 
-  /** Get styles for search button */
+  /**
+   * Gets the styles for the search button.
+   * @returns {Record<string, string>} The button styles
+   */
   get searchButtonStyles(): Record<string, string> {
-    const buttonStyles = this.config.searchStyle?.button || {};
+    const buttonStyles = { ...(this.config.searchStyle?.button || {}) };
+    const shapeStyles = this.getButtonShapeStyles();
+    
+    // Remove borderRadius from buttonStyles if shape is specified
+    if (this.config.navigationStyle?.buttonShape && buttonStyles) {
+      delete buttonStyles['borderRadius'];
+    }
+
     return {
-      ...this.getButtonShapeStyles(),
-      ...buttonStyles,
-      // Ensure border-radius is applied last
-      borderRadius: this.config.navigationStyle?.buttonShape === 'circle' ? '50%' : buttonStyles['borderRadius'] || '0'
+      ...shapeStyles,
+      ...buttonStyles
     };
   }
 
@@ -578,11 +643,11 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   get navigationPadding(): string {
-    return this.config.navigationPadding || '10px';
+    return this.config.navigationPadding || '4px';
   }
 
   get contentPadding(): string {
-    return this.config.contentPadding || '10px';
+    return this.config.contentPadding || '4px';
   }
 
   get animationDuration(): string {
@@ -646,7 +711,7 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @HostListener('document:click', ['$event'])
   handleClickOutside(event: MouseEvent): void {
-    const searchContainer = document.querySelector('.nsc-search-container');
+    const searchContainer = document.querySelector('.nsc__search');
     if (
       this.isSearchModalOpen &&
       searchContainer &&
@@ -730,5 +795,10 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
     return {
       color: buttonStyles['color'] || '#666'
     };
+  }
+
+  /** Get whether navigation should be shown */
+  get showNavigation(): boolean {
+    return this.config.showNavigation ?? true;
   }
 }

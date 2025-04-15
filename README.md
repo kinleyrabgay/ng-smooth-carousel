@@ -1,11 +1,11 @@
 # ng-smooth-carousel
 
-A smooth, customizable carousel component for Angular 14+ applications.
+A smooth, customizable carousel component for Angular 14+ applications, supporting both vertical and horizontal orientations.
 
 ## Features
 
 - 🎯 Smooth scrolling animation
-- 🔄 Vertical and horizontal orientation support
+- 🔄 Flexible orientation support (vertical & horizontal)
 - 🎨 Highly customizable navigation buttons and styling
 - 🔍 Built-in search functionality
 - 📱 Responsive design
@@ -38,13 +38,23 @@ import { NgSmoothCarouselModule } from 'ng-smooth-carousel';
 2. Use the carousel component in your template:
 
 ```html
-<ng-smooth-carousel [items]="items" [config]="carouselConfig">
+<!-- Horizontal Carousel (Default) -->
+<nsc [items]="items" [config]="carouselConfig">
   <ng-template #carouselItem let-item>
     <div class="custom-item">
       {{ item.title }}
     </div>
   </ng-template>
-</ng-smooth-carousel>
+</nsc>
+
+<!-- Vertical Carousel -->
+<nsc [items]="items" [config]="{ orientation: 'vertical', ...otherConfig }">
+  <ng-template #carouselItem let-item>
+    <div class="custom-item">
+      {{ item.title }}
+    </div>
+  </ng-template>
+</nsc>
 ```
 
 ## Configuration Example
@@ -53,17 +63,29 @@ Here's a comprehensive example of the carousel configuration:
 
 ```typescript
 const carouselConfig: CarouselConfig = {
+  // Layout Configuration
   containerWidth: '100%',
   containerHeight: '100%',
   itemWidth: '200px',
   itemHeight: '200px',
   itemGap: '20px',
-  showNavigation: true,
+  orientation: 'horizontal', // or 'vertical'
+  
+  // Navigation Configuration
+  showNavigation: true, // defaults to true
+  navigationSize: '60px',
+  navigationPadding: '4px',
+  
+  // Animation & Scroll
   animationDuration: '300ms',
   scrollSize: '10xl',
+  
+  // Search Configuration
   enableSearch: true,
   searchPlaceholder: 'Search...',
   searchModalTitle: 'Search Items',
+  
+  // Navigation Styling
   navigationStyle: {
     buttonShape: 'circle', // 'circle' | 'rounded' | 'square'
     nextButton: {
@@ -71,7 +93,6 @@ const carouselConfig: CarouselConfig = {
       color: 'white',
       border: 'none',
       padding: '10px',
-      borderRadius: '4px',
       width: '40px',
       height: '40px',
     },
@@ -80,13 +101,16 @@ const carouselConfig: CarouselConfig = {
       color: 'white',
       border: 'none',
       padding: '10px',
-      borderRadius: '4px',
       width: '40px',
       height: '40px',
     },
     icons: {
       next: 'N',
       prev: 'P',
+      vertical: {
+        next: '↓',
+        prev: '↑'
+      }
     },
   },
 };
@@ -216,7 +240,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-For support, please create an issue in the [GitHub repository](https://github.com/SELISE-Digital-Platform/ng-smooth-carousel/issues).
+For support, please create an issue in the [GitHub repository](https://github.com/kinleyrabgay/ng-smooth-carousel/issues).
 
 ## Changelog
 
