@@ -29,10 +29,10 @@ export class AppComponent {
     itemWidth: '150px',
     itemHeight: '150px',
     itemGap: '16px',
-    showNavigation: false,
+    // showNavigation: false,
     animationDuration: '300ms',
     scrollSize: '2xl',
-    orientation: 'vertical',
+    // orientation: 'vertical',
     navigationPadding: '2px',
     navigationStyle: {
       buttonShape: 'rounded',

@@ -218,8 +218,7 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        transition: all var(--animation-duration, 0.3s)
-          var(--animation-timing, ease);
+        transition: all 0.2s ease;
         z-index: 1;
       }
 
@@ -235,11 +234,19 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
 
       .nsc__nav-button:hover:not(.nsc__nav-button--disabled) {
         opacity: 0.8;
+        transform: translate(-50%, -50%) scale(1.05);
+      }
+
+      .nsc--vertical .nsc__nav-button:hover:not(.nsc__nav-button--disabled) {
+        transform: scale(1.05);
       }
 
       .nsc__nav-button--disabled {
         opacity: 0.4;
         cursor: not-allowed;
+        background-color: #f5f5f5;
+        border-color: #ddd;
+        transition: all 0.2s ease;
       }
 
       .nsc__nav-group {
@@ -292,10 +299,9 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
         min-width: 200px;
       }
 
-      .nsc__dropdown:not(.nsc__dropdown--vertical) {
-        left: 100%;
+      .nsc--vertical .nsc__dropdown {
+        left: calc(100% + 8px);
         top: 0;
-        margin-left: 8px;
       }
 
       .nsc__dropdown--vertical {
@@ -350,6 +356,10 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
 
       .nsc__reset-button:hover {
         opacity: 0.7;
+      }
+
+      .nsc--vertical .nsc__nav-button .nsc__nav-icon {
+        transform: rotate(90deg);
       }
     `,
   ],
@@ -416,8 +426,11 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
     const delay = this.parseTimeToMs(this.config.autoplayDelay || '3000ms');
 
     this.autoplayInterval = setInterval(() => {
-      const track = this.trackElement.nativeElement;
-      const wrapper = this.wrapperElement.nativeElement;
+      const track = this.trackElement?.nativeElement;
+      const wrapper = this.wrapperElement?.nativeElement;
+      
+      if (!track || !wrapper) return;
+      
       const maxTranslate = this.isVertical
         ? track.offsetHeight - wrapper.offsetHeight
         : track.offsetWidth - wrapper.offsetWidth;
@@ -440,6 +453,10 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
     this.initializeCarousel();
     this.setupResizeListener();
     this.setupAutoplay();
+    
+    setTimeout(() => {
+      this.checkOverflow();
+    });
   }
 
   ngOnDestroy(): void {
@@ -474,9 +491,10 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private initializeCarousel(): void {
-    if (this.trackElement && this.wrapperElement) {
-      this.checkOverflow();
-    }
+    if (!this.trackElement || !this.wrapperElement) return;
+    
+    this.currentTranslate = 0;
+    this.checkOverflow();
   }
 
   private setupResizeListener(): void {
@@ -488,22 +506,24 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private checkOverflow(): void {
-    if (!this.config.showNavigation) {
+    if (!this.showNavigation) {
       this.showPrevButton = false;
       this.showNextButton = false;
       return;
     }
 
-    const track = this.trackElement.nativeElement;
-    const wrapper = this.wrapperElement.nativeElement;
+    const track = this.trackElement?.nativeElement;
+    const wrapper = this.wrapperElement?.nativeElement;
+
+    if (!track || !wrapper) return;
 
     if (this.isVertical) {
       this.showPrevButton = this.currentTranslate > 0;
-      this.showNextButton =
+      this.showNextButton = 
         track.offsetHeight - this.currentTranslate > wrapper.offsetHeight;
     } else {
       this.showPrevButton = this.currentTranslate > 0;
-      this.showNextButton =
+      this.showNextButton = 
         track.offsetWidth - this.currentTranslate > wrapper.offsetWidth;
     }
 
@@ -735,8 +755,8 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Get navigation icons based on configuration and orientation */
   private getNavigationIcons(): { prev: string; next: string; search: string } {
     const defaultIcons = {
-      horizontal: { prev: '←', next: '→' },
-      vertical: { prev: '↑', next: '↓' },
+      horizontal: { prev: '❮', next: '❯' },
+      vertical: { prev: '❮', next: '❯' },
       search: '🔍'
     };
 
