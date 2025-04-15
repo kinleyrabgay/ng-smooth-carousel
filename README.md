@@ -23,19 +23,36 @@ npm install ng-smooth-carousel
 
 ## Usage
 
-1. Import the `NgSmoothCarouselModule` in your module or component:
+1. Import the `NgSmoothCarouselModule` in your module:
 
 ```typescript
+import { NgModule } from '@angular/core';
+import { NgSmoothCarouselModule } from 'ng-smooth-carousel';
+
+@NgModule({
+  imports: [
+    NgSmoothCarouselModule
+  ],
+  // ...
+})
+export class YourModule { }
+```
+
+2. For standalone components:
+
+```typescript
+import { Component } from '@angular/core';
 import { NgSmoothCarouselModule } from 'ng-smooth-carousel';
 
 @Component({
   // ...
-  imports: [NgSmoothCarouselModule],
-  // ...
+  standalone: true,
+  imports: [NgSmoothCarouselModule]
 })
+export class YourComponent { }
 ```
 
-2. Use the carousel component in your template:
+3. Use in your template:
 
 ```html
 <!-- Horizontal Carousel (Default) -->
@@ -48,7 +65,7 @@ import { NgSmoothCarouselModule } from 'ng-smooth-carousel';
 </nsc>
 
 <!-- Vertical Carousel -->
-<nsc [items]="items" [config]="{ orientation: 'vertical', ...otherConfig }">
+<nsc [items]="items" [config]="{ orientation: 'vertical' }">
   <ng-template #carouselItem let-item>
     <div class="custom-item">
       {{ item.title }}
@@ -57,63 +74,62 @@ import { NgSmoothCarouselModule } from 'ng-smooth-carousel';
 </nsc>
 ```
 
-## Configuration Example
-
-Here's a comprehensive example of the carousel configuration:
+4. Configure in your component:
 
 ```typescript
-const carouselConfig: CarouselConfig = {
-  // Layout Configuration
-  containerWidth: '100%',
-  containerHeight: '100%',
-  itemWidth: '200px',
-  itemHeight: '200px',
-  itemGap: '20px',
-  orientation: 'horizontal', // or 'vertical'
-  
-  // Navigation Configuration
-  showNavigation: true, // defaults to true
-  navigationSize: '60px',
-  navigationPadding: '4px',
-  
-  // Animation & Scroll
-  animationDuration: '300ms',
-  scrollSize: '10xl',
-  
-  // Search Configuration
-  enableSearch: true,
-  searchPlaceholder: 'Search...',
-  searchModalTitle: 'Search Items',
-  
-  // Navigation Styling
-  navigationStyle: {
-    buttonShape: 'circle', // 'circle' | 'rounded' | 'square'
-    nextButton: {
-      backgroundColor: 'red',
-      color: 'white',
-      border: 'none',
-      padding: '10px',
-      width: '40px',
-      height: '40px',
-    },
-    prevButton: {
-      backgroundColor: 'blue',
-      color: 'white',
-      border: 'none',
-      padding: '10px',
-      width: '40px',
-      height: '40px',
-    },
-    icons: {
-      next: 'N',
-      prev: 'P',
-      vertical: {
-        next: '↓',
-        prev: '↑'
+import { Component } from '@angular/core';
+import { CarouselConfig } from 'ng-smooth-carousel';
+
+@Component({
+  // ...
+})
+export class YourComponent {
+  items = [
+    { title: 'Item 1' },
+    { title: 'Item 2' },
+    // ...
+  ];
+
+  carouselConfig: CarouselConfig = {
+    // Layout Configuration
+    containerWidth: '100%',
+    containerHeight: 'auto',
+    itemWidth: '200px',
+    itemHeight: '200px',
+    itemGap: '16px',
+    orientation: 'horizontal', // or 'vertical'
+    
+    // Navigation Configuration
+    showNavigation: true,     // defaults to true
+    navigationSize: '60px',
+    navigationPadding: '4px',
+    
+    // Animation & Scroll
+    animationDuration: '300ms',
+    scrollSize: 'md',         // 'xs' to '10xl'
+    
+    // Features
+    enableSearch: false,
+    loop: false,
+    autoplay: false,
+    autoplayDelay: '3000ms',
+    
+    // Navigation Styling
+    navigationStyle: {
+      buttonShape: 'rounded', // 'circle' | 'rounded' | 'square'
+      nextButton: {
+        backgroundColor: '#fff',
+        color: '#333',
+        border: '1px solid #ddd'
+      },
+      prevButton: {
+        backgroundColor: '#fff',
+        color: '#333',
+        border: '1px solid #ddd'
       }
-    },
-  },
-};
+    }
+  };
+}
 ```
 
 ## Configuration Options
@@ -132,103 +148,71 @@ const carouselConfig: CarouselConfig = {
 | `animationDuration` | string | '300ms' | Duration of scroll animation |
 | `animationTiming` | string | 'ease' | Timing function for animation |
 
-### Navigation Configuration
+### Scroll Sizes
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `navigationSize` | string | Size of navigation buttons area |
-| `navigationPadding` | string | Padding around navigation buttons |
-| `buttonShape` | 'circle' \| 'rounded' \| 'square' | Shape of navigation buttons |
-| `nextButton` | ButtonStyle | Styles for next button |
-| `prevButton` | ButtonStyle | Styles for previous button |
-| `icons` | NavigationIcons | Custom icons for buttons |
-
-### Search Configuration
-
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `enableSearch` | boolean | false | Enable/disable search functionality |
-| `searchPlaceholder` | string | 'Search...' | Placeholder text for search input |
-| `searchModalTitle` | string | 'Filter Items' | Title for search modal |
-| `searchStyle` | SearchStyle | undefined | Custom styles for search components |
-
-### Scroll Configuration
-
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `scrollSize` | ScrollSize | 'sm' | Amount to scroll per navigation click |
-| `loop` | boolean | false | Enable/disable infinite loop |
-| `autoplay` | boolean | false | Enable/disable autoplay |
-| `autoplayDelay` | string | '3000ms' | Delay between autoplay slides |
-
-## Types
+The `scrollSize` property accepts the following values, each moving by a specific number of pixels:
 
 ```typescript
-type ScrollSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl' | '7xl' | '8xl' | '9xl' | '10xl';
+type ScrollSize = 
+  | 'xs'   // 50px
+  | 'sm'   // 100px
+  | 'md'   // 150px
+  | 'lg'   // 200px
+  | 'xl'   // 250px
+  | '2xl'  // 300px
+  | '3xl'  // 350px
+  | '4xl'  // 400px
+  | '5xl'  // 450px
+  | '6xl'  // 500px
+  | '7xl'  // 550px
+  | '8xl'  // 600px
+  | '9xl'  // 650px
+  | '10xl' // 700px
+```
 
+### Button Shapes
+
+The `buttonShape` property in `navigationStyle` accepts:
+
+```typescript
 type ButtonShape = 'circle' | 'rounded' | 'square';
+```
+
+### Navigation Style Interface
+
+```typescript
+interface NavigationStyle {
+  buttonShape?: ButtonShape;
+  nextButton?: ButtonStyle;
+  prevButton?: ButtonStyle;
+  icons?: {
+    next?: string;
+    prev?: string;
+    search?: string;
+    vertical?: {
+      next?: string;
+      prev?: string;
+    };
+  };
+}
 
 interface ButtonStyle {
   backgroundColor?: string;
   color?: string;
   border?: string;
   padding?: string;
-  borderRadius?: string;
   width?: string;
   height?: string;
   [key: string]: string | undefined;
 }
-
-interface NavigationIcons {
-  next?: string;
-  prev?: string;
-  search?: string;
-  vertical?: {
-    next?: string;
-    prev?: string;
-  };
-}
-
-interface SearchStyle {
-  button?: ButtonStyle;
-  modal?: Record<string, string>;
-}
 ```
 
-## Roadmap
+## Browser Support
 
-Here are the upcoming features and improvements planned for ng-smooth-carousel:
-
-### In Progress 🚧
-- 🔍 Enhanced Search Functionality
-  - Full-text search with highlighting
-  - Advanced filtering options
-  - Customizable search results display
-  - Search history and suggestions
-
-### Coming Soon 🔜
-- 🎯 Touch and Swipe Gestures
-  - Smooth touch interactions
-  - Customizable swipe sensitivity
-  - Multi-touch support
-- ⌨️ Keyboard Navigation
-  - Arrow key navigation
-  - Keyboard shortcuts for common actions
-- 🌐 RTL (Right-to-Left) Support
-  - Full RTL layout support
-  - Automatic direction detection
-  - RTL-specific animations
-- ♿ Accessibility Improvements
-  - ARIA attributes
-  - Screen reader support
-  - Keyboard focus management
-- 🎨 Additional Features
-  - Multiple item selection
-  - Drag and drop reordering
-  - Custom transition effects
-  - Lazy loading improvements
-  - Thumbnail navigation option
-  - Dynamic item height support
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
 
 ## Contributing
 

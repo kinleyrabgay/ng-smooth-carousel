@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2025-04-15
+### Fixed
+- Angular 14 compatibility issues
+- Module import issues in feature modules
+- Added proper peer dependencies for Angular 14-17 support
+- Ensured all necessary exports in public API
+
 ## [1.0.2] - 2025-04-15
 ### Changed
 - Default navigation icons changed to chevron arrows (❮❯)

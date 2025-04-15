@@ -4,15 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { CarouselComponent } from './carousel.component';
 
 @NgModule({
-  declarations: [
-    CarouselComponent
-  ],
+  declarations: [CarouselComponent],
   imports: [
     CommonModule,
     FormsModule
   ],
-  exports: [
-    CarouselComponent
-  ]
+  exports: [CarouselComponent]
 })
 export class NgSmoothCarouselModule {}
