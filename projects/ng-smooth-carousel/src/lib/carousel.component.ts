@@ -138,7 +138,9 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private autoplayInterval?: ReturnType<typeof setInterval>;
   private itemWidths: number[] = [];
+  private itemHeights: number[] = [];
   private containerWidth: number = 0;
+  private containerHeight: number = 0;
 
   private readonly scrollSizeMap = {
     'xs': 50, 'sm': 100, 'md': 150, 'lg': 200, 'xl': 250,
@@ -245,6 +247,7 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   private updateContainerWidth(): void {
     if (!this.wrapperElement) return;
     this.containerWidth = this.wrapperElement.nativeElement.offsetWidth;
+    this.containerHeight = this.wrapperElement.nativeElement.offsetHeight;
   }
 
   private checkOverflow(): void {
@@ -277,9 +280,30 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
     const w = this.wrapperElement.nativeElement;
     const items = Array.from(this.trackElement.nativeElement.children) as HTMLElement[];
     
-    if (this.config.itemWidth === '100%' && this.config.enableOneItemScroll) {
-      const pWidth = w.offsetWidth;
-      this.itemWidths = items.map(() => pWidth);
+    if (this.config.enableOneItemScroll) {
+      if (this.isVertical) {
+        const pHeight = w.offsetHeight;
+        this.itemHeights = items.map(() => pHeight);
+        
+        this.itemWidths = items.map(item => {
+          const style = window.getComputedStyle(item);
+          const width = item.offsetWidth;
+          const ml = parseInt(style.marginLeft || '0', 10);
+          const mr = parseInt(style.marginRight || '0', 10);
+          return width + ml + mr;
+        });
+      } else {
+        const pWidth = w.offsetWidth;
+        this.itemWidths = items.map(() => pWidth);
+        
+        this.itemHeights = items.map(item => {
+          const style = window.getComputedStyle(item);
+          const height = item.offsetHeight;
+          const mt = parseInt(style.marginTop || '0', 10);
+          const mb = parseInt(style.marginBottom || '0', 10);
+          return height + mt + mb;
+        });
+      }
       return;
     }
     
@@ -290,18 +314,37 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
       const mr = parseInt(style.marginRight || '0', 10);
       return width + ml + mr;
     });
+    
+    this.itemHeights = items.map(item => {
+      const style = window.getComputedStyle(item);
+      const height = item.offsetHeight;
+      const mt = parseInt(style.marginTop || '0', 10);
+      const mb = parseInt(style.marginBottom || '0', 10);
+      return height + mt + mb;
+    });
   }
 
   private getScrollAmount(): number {
-    if (this.config.enableOneItemScroll && this.itemWidths.length > 0) {
-      if (this.currentIndex < this.itemWidths.length) {
-        return this.itemWidths[this.currentIndex];
+    if (this.config.enableOneItemScroll) {
+      if (this.isVertical && this.itemHeights.length > 0) {
+        if (this.currentIndex < this.itemHeights.length) {
+          return this.itemHeights[this.currentIndex];
+        }
+        return this.itemHeights[0] || this.wrapperElement.nativeElement.offsetHeight;
+      } else if (this.itemWidths.length > 0) {
+        if (this.currentIndex < this.itemWidths.length) {
+          return this.itemWidths[this.currentIndex];
+        }
+        return this.itemWidths[0] || this.wrapperElement.nativeElement.offsetWidth;
       }
-      return this.itemWidths[0] || this.wrapperElement.nativeElement.offsetWidth;
     }
     
     const size = this.config.scrollSize || 'sm';
-    if (size === 'full') return this.wrapperElement.nativeElement.offsetWidth;
+    if (size === 'full') {
+      return this.isVertical 
+        ? this.wrapperElement.nativeElement.offsetHeight 
+        : this.wrapperElement.nativeElement.offsetWidth;
+    }
     return this.scrollSizeMap[size as keyof typeof this.scrollSizeMap] || this.scrollSizeMap['sm'];
   }
 
@@ -312,9 +355,15 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this.currentIndex === 0) {
           this.currentTranslate = 0;
         } else {
-          const iw = this.itemWidths[this.currentIndex] || this.wrapperElement.nativeElement.offsetWidth;
           const gap = this.config.itemGap ? parseInt(this.config.itemGap.replace('px', ''), 10) : 0;
-          this.currentTranslate = this.currentIndex * (iw + gap);
+          
+          if (this.isVertical) {
+            const ih = this.itemHeights[this.currentIndex] || this.wrapperElement.nativeElement.offsetHeight;
+            this.currentTranslate = this.currentIndex * (ih + gap);
+          } else {
+            const iw = this.itemWidths[this.currentIndex] || this.wrapperElement.nativeElement.offsetWidth;
+            this.currentTranslate = this.currentIndex * (iw + gap);
+          }
         }
       }
     } else {
@@ -330,15 +379,26 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
     
     if (this.config.enableOneItemScroll) {
       if (this.currentIndex < this.filteredItems.length - 1) {
-        const iw = this.itemWidths[this.currentIndex] || w.offsetWidth;
         const gap = this.config.itemGap ? parseInt(this.config.itemGap.replace('px', ''), 10) : 0;
         
         this.currentIndex++;
         
-        if (this.config.itemWidth === '100%') {
-          this.currentTranslate = this.currentIndex * (iw + gap);
+        if (this.isVertical) {
+          const ih = this.itemHeights[this.currentIndex - 1] || w.offsetHeight;
+          
+          if (this.config.itemHeight === '100%') {
+            this.currentTranslate = this.currentIndex * (ih + gap);
+          } else {
+            this.currentTranslate += ih + gap;
+          }
         } else {
-          this.currentTranslate += iw + gap;
+          const iw = this.itemWidths[this.currentIndex - 1] || w.offsetWidth;
+          
+          if (this.config.itemWidth === '100%') {
+            this.currentTranslate = this.currentIndex * (iw + gap);
+          } else {
+            this.currentTranslate += iw + gap;
+          }
         }
       }
     } else {
