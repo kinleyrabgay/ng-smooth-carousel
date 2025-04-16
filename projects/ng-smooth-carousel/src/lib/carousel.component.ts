@@ -388,9 +388,12 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
       borderRadius: 'inherit'
     };
 
+    // Handle width calculation
     if (this.config.itemWidth) {
       if (this.config.itemWidth === '100%' && this.config.enableOneItemScroll && this.containerWidth > 0) {
-        s['width'] = (this.containerWidth) + 'px';
+        // Adjust width based on orientation
+        const widthAdjustment = this.isVertical ? 4 : 0;
+        s['width'] = (this.containerWidth - widthAdjustment) + 'px';
         s['maxWidth'] = '100%';
       } else {
         s['width'] = this.config.itemWidth;
@@ -398,12 +401,15 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       s['width'] = '100%';
     }
-    
+      
+    // Handle height calculation
     if (this.config.itemHeight) {
       if (this.config.itemHeight === '100%' && this.wrapperElement) {
         const containerHeight = this.wrapperElement.nativeElement.offsetHeight;
         if (containerHeight > 0) {
-          s['height'] = (containerHeight - 4) + 'px';
+          // Adjust height based on orientation
+          const heightAdjustment = this.isVertical ? 0 : 4;
+          s['height'] = (containerHeight - heightAdjustment) + 'px';
           s['maxHeight'] = '100%';
         } else {
           s['height'] = this.config.itemHeight;
@@ -415,12 +421,14 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
       s['height'] = 'auto';
     }
 
+    // Apply border radius based on button shape
     if (this.config.navigationStyle?.buttonShape === 'rounded') {
       s['borderRadius'] = '4px';
     } else if (this.config.navigationStyle?.buttonShape === 'circle') {
       s['borderRadius'] = '50%';
     }
 
+    // Add margin for gap between items
     if (!this.config.itemGap) return s;
 
     const m = this.isVertical ? 'marginTop' : 'marginLeft';
