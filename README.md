@@ -145,6 +145,20 @@ export class YourComponent {
 }
 ```
 
+### Basic Carousel
+```typescript
+carouselConfig: CarouselConfig = {
+  containerWidth: '100%',
+  containerHeight: '300px',
+  itemWidth: '400px',
+  itemHeight: '100%',
+  itemGap: '24px',
+  navigationStyle: {
+    buttonShape: 'rounded',
+  },
+};
+```
+
 ## Configuration Options
 
 ### Basic Configuration
@@ -182,7 +196,7 @@ To create a carousel that displays and scrolls through one full-width item at a 
 
 ```typescript
 carouselConfig: CarouselConfig = {
-  containerWidth: '600px',
+  containerWidth: '100%',
   containerHeight: '300px',
   itemWidth: '100%',
   itemHeight: '100%',

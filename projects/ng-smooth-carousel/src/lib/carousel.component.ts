@@ -384,13 +384,14 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
       flexShrink: '0',
       flexGrow: '0',
       boxSizing: 'border-box',
-      overflow: 'hidden'
+      overflow: 'hidden',
+      borderRadius: 'inherit'
     };
 
     if (this.config.itemWidth) {
-      // For percentage width with enableOneItemScroll, use the wrapper width
       if (this.config.itemWidth === '100%' && this.config.enableOneItemScroll && this.containerWidth > 0) {
-        s['width'] = s['maxWidth'] = this.containerWidth + 'px';
+        s['width'] = (this.containerWidth) + 'px';
+        s['maxWidth'] = '100%';
       } else {
         s['width'] = this.config.itemWidth;
       }
@@ -399,11 +400,11 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     
     if (this.config.itemHeight) {
-      // Always adapt to container height when set to 100%, regardless of enableOneItemScroll
       if (this.config.itemHeight === '100%' && this.wrapperElement) {
         const containerHeight = this.wrapperElement.nativeElement.offsetHeight;
         if (containerHeight > 0) {
-          s['height'] = s['maxHeight'] = containerHeight + 'px';
+          s['height'] = (containerHeight - 4) + 'px';
+          s['maxHeight'] = '100%';
         } else {
           s['height'] = this.config.itemHeight;
         }
@@ -412,6 +413,12 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     } else {
       s['height'] = 'auto';
+    }
+
+    if (this.config.navigationStyle?.buttonShape === 'rounded') {
+      s['borderRadius'] = '4px';
+    } else if (this.config.navigationStyle?.buttonShape === 'circle') {
+      s['borderRadius'] = '50%';
     }
 
     if (!this.config.itemGap) return s;
