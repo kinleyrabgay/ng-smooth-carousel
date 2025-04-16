@@ -13,6 +13,8 @@ A smooth, customizable carousel component for Angular, supporting both vertical 
 - 🎮 Multiple navigation options ✅
 - 🎯 Custom item templates ✅
 - 🔄 Auto-play support ✅
+- 🔄 Full-width single item support ✅
+- 🔄 Tab-friendly with visibility detection ✅
 
 ## Coming Soon
 
@@ -282,7 +284,7 @@ interface SearchStyle {
 
 | Angular Version | Package Version |
 |-----------------|-----------------|
-| Angular 14      | 14.0.0          |
+| Angular 14      | 14.0.4          |
 | Angular 17+     | Coming soon     |
 
 ## Browser Support

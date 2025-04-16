@@ -10,6 +10,7 @@ import {
   ChangeDetectorRef,
   HostListener,
   OnInit,
+  NgZone,
 } from '@angular/core';
 import { Subject, fromEvent } from 'rxjs';
 import { takeUntil, debounceTime } from 'rxjs/operators';
@@ -141,6 +142,10 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   private itemHeights: number[] = [];
   private containerWidth: number = 0;
   private containerHeight: number = 0;
+  private intersectionObserver: IntersectionObserver | null = null;
+  private resizeObserver: ResizeObserver | null = null;
+  private visibilityChangeTimeout: any = null;
+  private initialized = false;
 
   private readonly scrollSizeMap = {
     'xs': 50, 'sm': 100, 'md': 150, 'lg': 200, 'xl': 250,
@@ -154,7 +159,10 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   isSearchModalOpen = false;
   filteredItems: any[] = [];
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit(): void {
     this.filteredItems = this.items;
@@ -193,19 +201,50 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.initializeCarousel();
     this.setupResizeListener();
+    this.setupIntersectionObserver();
+    this.setupResizeObserver();
     this.setupAutoplay();
     
     setTimeout(() => {
       this.updateContainerWidth();
       this.calculateItemWidths();
       this.checkOverflow();
+      this.initialized = true;
     });
   }
 
   ngOnDestroy(): void {
-    if (this.autoplayInterval) clearInterval(this.autoplayInterval);
+    // Clear any interval timers
+    if (this.autoplayInterval) {
+      clearInterval(this.autoplayInterval);
+      this.autoplayInterval = undefined;
+    }
+
+    // Disconnect observers
+    if (this.intersectionObserver) {
+      this.intersectionObserver.disconnect();
+      this.intersectionObserver = null;
+    }
+
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+      this.resizeObserver = null;
+    }
+
+    // Clear any timeouts
+    if (this.visibilityChangeTimeout) {
+      clearTimeout(this.visibilityChangeTimeout);
+      this.visibilityChangeTimeout = null;
+    }
+
+    // Complete all observables
     this.destroy$.next();
     this.destroy$.complete();
+    
+    // Clear arrays
+    this.itemWidths = [];
+    this.itemHeights = [];
+    this.filteredItems = [];
   }
 
   get isVertical(): boolean {
@@ -244,6 +283,54 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
       });
   }
 
+  private setupIntersectionObserver(): void {
+    // Create an IntersectionObserver to detect when the carousel becomes visible
+    if ('IntersectionObserver' in window) {
+      this.ngZone.runOutsideAngular(() => {
+        this.intersectionObserver = new IntersectionObserver(entries => {
+          const isVisible = entries[0]?.isIntersecting;
+          
+          if (isVisible && this.initialized) {
+            // When component becomes visible, recalculate dimensions and update buttons
+            this.ngZone.run(() => {
+              // Use a small timeout to ensure the DOM has settled
+              this.visibilityChangeTimeout = setTimeout(() => {
+                this.updateContainerWidth();
+                this.calculateItemWidths();
+                this.checkOverflow();
+              }, 50);
+            });
+          }
+        }, { threshold: 0.1 });
+        
+        if (this.wrapperElement?.nativeElement) {
+          this.intersectionObserver.observe(this.wrapperElement.nativeElement);
+        }
+      });
+    }
+  }
+
+  private setupResizeObserver(): void {
+    // Create a ResizeObserver to detect when the carousel's size changes
+    if ('ResizeObserver' in window) {
+      this.ngZone.runOutsideAngular(() => {
+        this.resizeObserver = new ResizeObserver(entries => {
+          if (this.initialized) {
+            this.ngZone.run(() => {
+              this.updateContainerWidth();
+              this.calculateItemWidths();
+              this.checkOverflow();
+            });
+          }
+        });
+        
+        if (this.wrapperElement?.nativeElement) {
+          this.resizeObserver.observe(this.wrapperElement.nativeElement);
+        }
+      });
+    }
+  }
+
   private updateContainerWidth(): void {
     if (!this.wrapperElement) return;
     this.containerWidth = this.wrapperElement.nativeElement.offsetWidth;
@@ -259,6 +346,12 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
     const t = this.trackElement?.nativeElement;
     const w = this.wrapperElement?.nativeElement;
     if (!t || !w) return;
+
+    // Check if the element has zero width or height, which may indicate it's hidden
+    if (w.offsetWidth === 0 || w.offsetHeight === 0) {
+      // Element might be in a hidden tab, don't update buttons yet
+      return;
+    }
 
     if (this.config.enableOneItemScroll) {
       this.showPrevButton = this.currentIndex > 0;
