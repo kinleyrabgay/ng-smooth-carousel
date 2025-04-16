@@ -97,15 +97,15 @@ import { CarouselConfig } from './carousel-config.interface';
   `,
   styles: [
     `
-      .nsc{position:relative;overflow:hidden;display:flex;flex-direction:column}
+      .nsc{position:relative;overflow:hidden;display:flex;flex-direction:column;border-radius:inherit}
       .nsc--vertical{flex-direction:column}
-      .nsc__wrapper{flex:1;overflow:hidden;position:relative;padding:var(--content-padding,10px) 0;width:100%}
+      .nsc__wrapper{flex:1;overflow:hidden;position:relative;padding:var(--content-padding,10px) 0;width:100%;border-radius:inherit}
       .nsc--vertical .nsc__wrapper{padding:0 var(--content-padding,10px)}
-      .nsc__track{display:flex;flex-wrap:nowrap;transition:transform var(--animation-duration,.3s) var(--animation-timing,ease);width:fit-content;min-width:100%}
+      .nsc__track{display:flex;flex-wrap:nowrap;transition:transform var(--animation-duration,.3s) var(--animation-timing,ease);width:fit-content;min-width:100%;border-radius:inherit}
       .nsc__track--vertical{flex-direction:column;width:100%;height:fit-content}
-      .nsc__item{flex:0 0 auto;box-sizing:border-box}
+      .nsc__item{flex:0 0 auto;box-sizing:border-box;border-radius:inherit}
       .nsc--vertical .nsc__item{width:100%}
-      .nsc__item-default{background:#fff;height:100%;display:flex;align-items:center;justify-content:center;border:1px solid #e0e0e0;border-radius:4px;padding:20px}
+      .nsc__item-default{background:#fff;height:100%;display:flex;align-items:center;justify-content:center;border:1px solid #e0e0e0;border-radius:inherit;padding:20px}
       .nsc__nav-controls{position:absolute;bottom:16px;right:16px;display:flex;gap:24px;z-index:10}
       .nsc__nav-button{background:#fff;border:1px solid #e0e0e0;width:32px;height:32px;padding:0;margin:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;z-index:1}
       .nsc__nav-icon{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:16px;line-height:1}
@@ -383,7 +383,8 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
     const s: Record<string, string> = {
       flexShrink: '0',
       flexGrow: '0',
-      boxSizing: 'border-box'
+      boxSizing: 'border-box',
+      overflow: 'hidden'
     };
 
     if (this.config.itemWidth) {
@@ -398,7 +399,8 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     
     if (this.config.itemHeight) {
-      if (this.config.itemHeight === '100%' && this.config.enableOneItemScroll && this.wrapperElement) {
+      // Always adapt to container height when set to 100%, regardless of enableOneItemScroll
+      if (this.config.itemHeight === '100%' && this.wrapperElement) {
         const containerHeight = this.wrapperElement.nativeElement.offsetHeight;
         if (containerHeight > 0) {
           s['height'] = s['maxHeight'] = containerHeight + 'px';
