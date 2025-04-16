@@ -27,24 +27,6 @@ import { CarouselConfig } from './carousel-config.interface';
  * - Custom item templates
  * - Autoplay with configurable delay
  * - Loop functionality
- * 
- * @example
- * ```html
- * <nsc
- *   [items]="items"
- *   [config]="{
- *     orientation: 'horizontal',
- *     navigationStyle: {
- *       buttonShape: 'rounded',
- *       nextButton: { color: '#333' },
- *       prevButton: { color: '#333' }
- *     }
- *   }">
- *   <ng-template #carouselItem let-item>
- *     {{ item }}
- *   </ng-template>
- * </nsc>
- * ```
  */
 @Component({
   selector: 'nsc',
@@ -76,7 +58,7 @@ import { CarouselConfig } from './carousel-config.interface';
             </ng-container>
           </ng-container>
           <ng-template #noResults>
-            <div class="nsc__item" [ngStyle]="getEmptyStateStyle()">
+            <div class="nsc__item" [ngStyle]="getItemStyle(0)">
               <div class="nsc__empty-state">
                 <div class="nsc__empty-icon">📭</div>
                 <div class="nsc__empty-text">No items found</div>
@@ -170,22 +152,10 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   private autoplayInterval?: ReturnType<typeof setInterval>;
   private itemWidths: number[] = [];
 
-  private readonly scrollSizeMap: Record<string, number> = {
-    'xs': 50,
-    'sm': 100,
-    'md': 150,
-    'lg': 200,
-    'xl': 250,
-    '2xl': 300,
-    '3xl': 350,
-    '4xl': 400,
-    '5xl': 450,
-    '6xl': 500,
-    '7xl': 550,
-    '8xl': 600,
-    '9xl': 650,
-    '10xl': 700,
-    'full': 1,
+  private readonly scrollSizeMap = {
+    'xs': 50, 'sm': 100, 'md': 150, 'lg': 200, 'xl': 250,
+    '2xl': 300, '3xl': 350, '4xl': 400, '5xl': 450, '6xl': 500,
+    '7xl': 550, '8xl': 600, '9xl': 650, '10xl': 700, 'full': 1
   };
 
   showPrevButton = false;
@@ -201,44 +171,31 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private parseTimeToMs(time: string): number {
-    if (time.endsWith('ms')) {
-      return parseInt(time.slice(0, -2), 10);
-    }
-    if (time.endsWith('s')) {
-      return parseFloat(time.slice(0, -1)) * 1000;
-    }
+    if (time.endsWith('ms')) return parseInt(time.slice(0, -2), 10);
+    if (time.endsWith('s')) return parseFloat(time.slice(0, -1)) * 1000;
     return parseInt(time, 10);
   }
 
   private setupAutoplay(): void {
-    if (this.autoplayInterval) {
-      clearInterval(this.autoplayInterval);
-    }
-
+    if (this.autoplayInterval) clearInterval(this.autoplayInterval);
     if (!this.config.autoplay) return;
 
     const delay = this.parseTimeToMs(this.config.autoplayDelay || '3000ms');
-
     this.autoplayInterval = setInterval(() => {
-      const track = this.trackElement?.nativeElement;
-      const wrapper = this.wrapperElement?.nativeElement;
+      const t = this.trackElement?.nativeElement;
+      const w = this.wrapperElement?.nativeElement;
       
-      if (!track || !wrapper) return;
+      if (!t || !w) return;
       
-      const maxTranslate = this.isVertical
-        ? track.offsetHeight - wrapper.offsetHeight
-        : track.offsetWidth - wrapper.offsetWidth;
-
-      if (this.currentTranslate >= maxTranslate) {
-        if (this.config.loop) {
-          this.currentTranslate = 0;
-        } else {
+      const max = this.isVertical ? t.offsetHeight - w.offsetHeight : t.offsetWidth - w.offsetWidth;
+      if (this.currentTranslate >= max) {
+        if (this.config.loop) this.currentTranslate = 0;
+        else {
           clearInterval(this.autoplayInterval);
           return;
         }
-      } else {
-        this.next();
-      }
+      } else this.next();
+      
       this.cdr.detectChanges();
     }, delay);
   }
@@ -255,9 +212,7 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.autoplayInterval) {
-      clearInterval(this.autoplayInterval);
-    }
+    if (this.autoplayInterval) clearInterval(this.autoplayInterval);
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -274,20 +229,16 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   get trackStyles(): Record<string, string> {
-    const baseStyles = {
+    const base = {
       transform: this.isVertical
         ? `translateY(-${this.currentTranslate}px)`
         : `translateX(-${this.currentTranslate}px)`,
     };
-
-    return this.isVertical
-      ? { ...baseStyles, flexDirection: 'column' }
-      : baseStyles;
+    return this.isVertical ? { ...base, flexDirection: 'column' } : base;
   }
 
   private initializeCarousel(): void {
     if (!this.trackElement || !this.wrapperElement) return;
-    
     this.currentTranslate = 0;
     this.checkOverflow();
   }
@@ -295,34 +246,28 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   private setupResizeListener(): void {
     fromEvent(window, 'resize')
       .pipe(debounceTime(200), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.checkOverflow();
-      });
+      .subscribe(() => this.checkOverflow());
   }
 
   private checkOverflow(): void {
     if (!this.showNavigation) {
-      this.showPrevButton = false;
-      this.showNextButton = false;
+      this.showPrevButton = this.showNextButton = false;
       return;
     }
 
-    const track = this.trackElement?.nativeElement;
-    const wrapper = this.wrapperElement?.nativeElement;
-
-    if (!track || !wrapper) return;
+    const t = this.trackElement?.nativeElement;
+    const w = this.wrapperElement?.nativeElement;
+    if (!t || !w) return;
 
     if (this.config.enableOneItemScroll) {
       this.showPrevButton = this.currentIndex > 0;
       this.showNextButton = this.currentIndex < this.filteredItems.length - 1;
     } else if (this.isVertical) {
       this.showPrevButton = this.currentTranslate > 0;
-      this.showNextButton = 
-        track.offsetHeight - this.currentTranslate > wrapper.offsetHeight;
+      this.showNextButton = t.offsetHeight - this.currentTranslate > w.offsetHeight;
     } else {
       this.showPrevButton = this.currentTranslate > 0;
-      this.showNextButton = 
-        track.offsetWidth - this.currentTranslate > wrapper.offsetWidth;
+      this.showNextButton = t.offsetWidth - this.currentTranslate > w.offsetWidth;
     }
 
     this.cdr.detectChanges();
@@ -331,26 +276,21 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   private calculateItemWidths(): void {
     if (!this.trackElement || !this.wrapperElement) return;
     
-    const track = this.trackElement.nativeElement;
-    const wrapper = this.wrapperElement.nativeElement;
-    const items = Array.from(track.children) as HTMLElement[];
+    const w = this.wrapperElement.nativeElement;
+    const items = Array.from(this.trackElement.nativeElement.children) as HTMLElement[];
     
-    // When items should take up 100% of parent width
     if (this.config.itemWidth === '100%' && this.config.enableOneItemScroll) {
-      // Just use the parent width for all items
-      const parentWidth = wrapper.offsetWidth;
-      this.itemWidths = items.map(() => parentWidth);
+      const pWidth = w.offsetWidth;
+      this.itemWidths = items.map(() => pWidth);
       return;
     }
     
     this.itemWidths = items.map(item => {
-      // Get the full width including margins
       const style = window.getComputedStyle(item);
       const width = item.offsetWidth;
-      const marginLeft = parseInt(style.marginLeft || '0', 10);
-      const marginRight = parseInt(style.marginRight || '0', 10);
-      
-      return width + marginLeft + marginRight;
+      const ml = parseInt(style.marginLeft || '0', 10);
+      const mr = parseInt(style.marginRight || '0', 10);
+      return width + ml + mr;
     });
   }
 
@@ -359,38 +299,24 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
       if (this.currentIndex < this.itemWidths.length) {
         return this.itemWidths[this.currentIndex];
       }
-      // Fallback to the first item's width if currentIndex is out of bounds
       return this.itemWidths[0] || this.wrapperElement.nativeElement.offsetWidth;
     }
     
     const size = this.config.scrollSize || 'sm';
-    
-    // If scrollSize is numeric, use it as the number of items to scroll
-    if (size === 'full') {
-      // Use the wrapper's width (parent container) instead of the screen width
-      return this.wrapperElement.nativeElement.offsetWidth;
-    }
-    
-    return this.scrollSizeMap[size] || this.scrollSizeMap['sm'];
+    if (size === 'full') return this.wrapperElement.nativeElement.offsetWidth;
+    return this.scrollSizeMap[size as keyof typeof this.scrollSizeMap] || this.scrollSizeMap['sm'];
   }
 
   previous(): void {
     if (this.config.enableOneItemScroll) {
       if (this.currentIndex > 0) {
         this.currentIndex--;
-        // Calculate the exact position based on previous item widths
         if (this.currentIndex === 0) {
-          // If we're at the first item, ensure we're at the beginning
           this.currentTranslate = 0;
         } else {
-          // Calculate position based on widths of all previous items plus gaps
-          const itemWidth = this.itemWidths[this.currentIndex] || this.wrapperElement.nativeElement.offsetWidth;
-          
-          // If we have gaps, consider them too
-          const gapWidth = this.config.itemGap ? 
-            parseInt(this.config.itemGap.replace('px', ''), 10) : 0;
-          
-          this.currentTranslate = this.currentIndex * (itemWidth + gapWidth);
+          const iw = this.itemWidths[this.currentIndex] || this.wrapperElement.nativeElement.offsetWidth;
+          const gap = this.config.itemGap ? parseInt(this.config.itemGap.replace('px', ''), 10) : 0;
+          this.currentTranslate = this.currentIndex * (iw + gap);
         }
       }
     } else {
@@ -401,129 +327,62 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   next(): void {
-    const track = this.trackElement.nativeElement;
-    const wrapper = this.wrapperElement.nativeElement;
+    const t = this.trackElement.nativeElement;
+    const w = this.wrapperElement.nativeElement;
     
     if (this.config.enableOneItemScroll) {
       if (this.currentIndex < this.filteredItems.length - 1) {
-        // Get the width of the current item
-        const itemWidth = this.itemWidths[this.currentIndex] || wrapper.offsetWidth;
-        
-        // If we have gaps, consider them too
-        const gapWidth = this.config.itemGap ? 
-          parseInt(this.config.itemGap.replace('px', ''), 10) : 0;
+        const iw = this.itemWidths[this.currentIndex] || w.offsetWidth;
+        const gap = this.config.itemGap ? parseInt(this.config.itemGap.replace('px', ''), 10) : 0;
         
         this.currentIndex++;
         
-        // Calculate position based on all previous items plus gaps
         if (this.config.itemWidth === '100%') {
-          // For 100% width items, simply multiply by the index
-          this.currentTranslate = this.currentIndex * (itemWidth + gapWidth);
+          this.currentTranslate = this.currentIndex * (iw + gap);
         } else {
-          // For variable width items, add the current item width
-          this.currentTranslate += itemWidth + gapWidth;
+          this.currentTranslate += iw + gap;
         }
       }
     } else {
-      const scrollAmount = this.getScrollAmount();
-      const maxTranslate = this.isVertical
-        ? track.offsetHeight - wrapper.offsetHeight
-        : track.offsetWidth - wrapper.offsetWidth;
-
-      this.currentTranslate = Math.min(
-        maxTranslate,
-        this.currentTranslate + scrollAmount
-      );
+      const amt = this.getScrollAmount();
+      const max = this.isVertical ? t.offsetHeight - w.offsetHeight : t.offsetWidth - w.offsetWidth;
+      this.currentTranslate = Math.min(max, this.currentTranslate + amt);
     }
     this.checkOverflow();
   }
 
-  /**
-   * Gets the button shape styles based on configuration.
-   * @private
-   * @returns {Record<string, string>} The button shape styles
-   */
   private getButtonShapeStyles(): Record<string, string> {
     const shape = this.config.navigationStyle?.buttonShape;
-    
-    // If borderRadius is explicitly set in button styles, warn about conflict
-    if (this.config.navigationStyle?.nextButton?.['borderRadius'] || 
-        this.config.navigationStyle?.prevButton?.['borderRadius'] ||
-        this.config.searchStyle?.button?.['borderRadius']) {
-      console.warn('Both buttonShape and borderRadius are set. buttonShape will take precedence.');
-    }
-
     switch (shape) {
-      case 'circle':
-        return { borderRadius: '50%' };
-      case 'rounded':
-        return { borderRadius: '4px' };
-      case 'square':
-      default:
-        return { borderRadius: '0' };
+      case 'circle': return { borderRadius: '50%' };
+      case 'rounded': return { borderRadius: '4px' };
+      default: return { borderRadius: '0' };
     }
   }
 
-  /**
-   * Gets the styles for the next navigation button.
-   * @returns {Record<string, string>} The button styles
-   */
   get nextButtonStyles(): Record<string, string> {
-    const buttonStyles = { ...(this.config.navigationStyle?.nextButton || {}) };
-    const shapeStyles = this.getButtonShapeStyles();
-    
-    // Remove borderRadius from buttonStyles if shape is specified
-    if (this.config.navigationStyle?.buttonShape && buttonStyles) {
-      delete buttonStyles['borderRadius'];
-    }
-
-    return {
-      ...shapeStyles,
-      ...buttonStyles
-    };
+    const bs = { ...(this.config.navigationStyle?.nextButton || {}) };
+    const ss = this.getButtonShapeStyles();
+    if (this.config.navigationStyle?.buttonShape && bs) delete bs['borderRadius'];
+    return { ...ss, ...bs };
   }
 
-  /**
-   * Gets the styles for the previous navigation button.
-   * @returns {Record<string, string>} The button styles
-   */
   get prevButtonStyles(): Record<string, string> {
-    const buttonStyles = { ...(this.config.navigationStyle?.prevButton || {}) };
-    const shapeStyles = this.getButtonShapeStyles();
-    
-    // Remove borderRadius from buttonStyles if shape is specified
-    if (this.config.navigationStyle?.buttonShape && buttonStyles) {
-      delete buttonStyles['borderRadius'];
-    }
-
-    return {
-      ...shapeStyles,
-      ...buttonStyles
-    };
+    const bs = { ...(this.config.navigationStyle?.prevButton || {}) };
+    const ss = this.getButtonShapeStyles();
+    if (this.config.navigationStyle?.buttonShape && bs) delete bs['borderRadius'];
+    return { ...ss, ...bs };
   }
 
-  /**
-   * Gets the styles for the search button.
-   * @returns {Record<string, string>} The button styles
-   */
   get searchButtonStyles(): Record<string, string> {
-    const buttonStyles = { ...(this.config.searchStyle?.button || {}) };
-    const shapeStyles = this.getButtonShapeStyles();
-    
-    // Remove borderRadius from buttonStyles if shape is specified
-    if (this.config.navigationStyle?.buttonShape && buttonStyles) {
-      delete buttonStyles['borderRadius'];
-    }
-
-    return {
-      ...shapeStyles,
-      ...buttonStyles
-    };
+    const bs = { ...(this.config.searchStyle?.button || {}) };
+    const ss = this.getButtonShapeStyles();
+    if (this.config.navigationStyle?.buttonShape && bs) delete bs['borderRadius'];
+    return { ...ss, ...bs };
   }
 
-  /** Get styles for carousel items */
   getItemStyle(index: number): Record<string, string> {
-    const baseStyles: Record<string, string> = {
+    const s: Record<string, string> = {
       width: this.config.itemWidth || '200px',
       height: this.config.itemHeight || '100%',
       flexShrink: '0',
@@ -531,55 +390,28 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
       boxSizing: 'border-box'
     };
 
-    // Ensure width is relative to parent when set to 100%
     if (this.config.itemWidth === '100%' && this.config.enableOneItemScroll) {
-      baseStyles['width'] = '100%';
-      baseStyles['maxWidth'] = '100%';
+      s['width'] = s['maxWidth'] = '100%';
     }
 
-    if (!this.config.itemGap) return baseStyles;
+    if (!this.config.itemGap) return s;
 
-    const marginProperty = this.isVertical ? 'marginTop' : 'marginLeft';
-    return {
-      ...baseStyles,
-      [marginProperty]: index === 0 ? '0' : this.config.itemGap
-    };
+    const m = this.isVertical ? 'marginTop' : 'marginLeft';
+    return { ...s, [m]: index === 0 ? '0' : this.config.itemGap };
   }
 
-  get contentPadding(): string {
-    return this.config.contentPadding || '4px';
-  }
-
-  get animationDuration(): string {
-    return this.config.animationDuration || '300ms';
-  }
-
-  get animationTiming(): string {
-    return this.config.animationTiming || 'ease';
-  }
-
-  get showSearch(): boolean {
-    return this.config.enableSearch ?? false;
-  }
-
-  get searchPlaceholder(): string {
-    return this.config.searchPlaceholder || 'Search...';
-  }
-
-  get searchModalTitle(): string {
-    return this.config.searchModalTitle || 'Filter Items';
-  }
-
-  get searchModalStyles(): Record<string, string> {
-    return this.config.searchStyle?.modal || {};
-  }
+  get contentPadding(): string { return this.config.contentPadding || '4px'; }
+  get animationDuration(): string { return this.config.animationDuration || '300ms'; }
+  get animationTiming(): string { return this.config.animationTiming || 'ease'; }
+  get showSearch(): boolean { return this.config.enableSearch ?? false; }
+  get searchPlaceholder(): string { return this.config.searchPlaceholder || 'Search...'; }
+  get searchModalTitle(): string { return this.config.searchModalTitle || 'Filter Items'; }
+  get searchModalStyles(): Record<string, string> { return this.config.searchStyle?.modal || {}; }
 
   toggleSearchModal(): void {
     this.isSearchModalOpen = !this.isSearchModalOpen;
     if (this.isSearchModalOpen && this.searchInput) {
-      setTimeout(() => {
-        this.searchInput.nativeElement.focus();
-      });
+      setTimeout(() => this.searchInput.nativeElement.focus());
     }
   }
 
@@ -588,19 +420,13 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   applySearch(): void {
-    const query = this.searchQuery.trim().toLowerCase();
-
-    if (!query) {
+    const q = this.searchQuery.trim().toLowerCase();
+    if (!q) {
       this.filteredItems = this.items;
     } else {
-      this.filteredItems = this.items.filter((item) => {
-        if (typeof item === 'string') {
-          return item.toLowerCase().includes(query);
-        }
-        return Object.values(item).some(
-          (value) =>
-            typeof value === 'string' && value.toLowerCase().includes(query)
-        );
+      this.filteredItems = this.items.filter(item => {
+        if (typeof item === 'string') return item.toLowerCase().includes(q);
+        return Object.values(item).some(v => typeof v === 'string' && v.toLowerCase().includes(q));
       });
     }
 
@@ -612,18 +438,10 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @HostListener('document:click', ['$event'])
   handleClickOutside(event: MouseEvent): void {
-    const searchContainer = document.querySelector('.nsc__search');
-    if (
-      this.isSearchModalOpen &&
-      searchContainer &&
-      !searchContainer.contains(event.target as Node)
-    ) {
+    const sc = document.querySelector('.nsc__search');
+    if (this.isSearchModalOpen && sc && !sc.contains(event.target as Node)) {
       this.closeSearchModal();
     }
-  }
-
-  getEmptyStateStyle(): Record<string, string> {
-    return this.getItemStyle(0);
   }
 
   resetSearch(): void {
@@ -631,80 +449,53 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
     this.filteredItems = this.items;
     this.currentTranslate = 0;
     this.currentIndex = 0;
-    
-    // Recalculate item widths when items change
     setTimeout(() => {
       this.calculateItemWidths();
       this.checkOverflow();
     });
   }
 
-  /** Get navigation icons based on configuration and orientation */
   private getNavigationIcons(): { prev: string; next: string; search: string } {
-    const defaultIcons = {
+    const defIcons = {
       horizontal: { prev: '❮', next: '❯' },
       vertical: { prev: '❮', next: '❯' },
       search: '🔍'
     };
 
-    const configIcons = this.config.navigationStyle?.icons || {};
-    const verticalIcons = configIcons.vertical || {};
+    const cfgIcons = this.config.navigationStyle?.icons || {};
+    const vIcons = cfgIcons.vertical || {};
 
     if (this.isVertical) {
       return {
-        prev: verticalIcons.prev || defaultIcons.vertical.prev,
-        next: verticalIcons.next || defaultIcons.vertical.next,
-        search: configIcons.search || defaultIcons.search
+        prev: vIcons.prev || defIcons.vertical.prev,
+        next: vIcons.next || defIcons.vertical.next,
+        search: cfgIcons.search || defIcons.search
       };
     }
 
     return {
-      prev: configIcons.prev || defaultIcons.horizontal.prev,
-      next: configIcons.next || defaultIcons.horizontal.next,
-      search: configIcons.search || defaultIcons.search
+      prev: cfgIcons.prev || defIcons.horizontal.prev,
+      next: cfgIcons.next || defIcons.horizontal.next,
+      search: cfgIcons.search || defIcons.search
     };
   }
 
-  /** Get icon for previous button */
-  get prevIcon(): string {
-    return this.getNavigationIcons().prev;
-  }
+  get prevIcon(): string { return this.getNavigationIcons().prev; }
+  get nextIcon(): string { return this.getNavigationIcons().next; }
+  get searchIcon(): string { return this.getNavigationIcons().search; }
 
-  /** Get icon for next button */
-  get nextIcon(): string {
-    return this.getNavigationIcons().next;
-  }
-
-  /** Get icon for search button */
-  get searchIcon(): string {
-    return this.getNavigationIcons().search;
-  }
-
-  /** Get icon styles based on button configuration */
   get nextIconStyles(): Record<string, string> {
-    const buttonStyles = this.config.navigationStyle?.nextButton || {};
-    return {
-      color: buttonStyles['color'] || '#666'
-    };
+    return { color: (this.config.navigationStyle?.nextButton || {})['color'] || '#666' };
   }
 
-  /** Get icon styles based on button configuration */
   get prevIconStyles(): Record<string, string> {
-    const buttonStyles = this.config.navigationStyle?.prevButton || {};
-    return {
-      color: buttonStyles['color'] || '#666'
-    };
+    return { color: (this.config.navigationStyle?.prevButton || {})['color'] || '#666' };
   }
 
-  /** Get icon styles based on button configuration */
   get searchIconStyles(): Record<string, string> {
-    const buttonStyles = this.config.searchStyle?.button || {};
-    return {
-      color: buttonStyles['color'] || '#666'
-    };
+    return { color: (this.config.searchStyle?.button || {})['color'] || '#666' };
   }
 
-  /** Get whether navigation should be shown */
   get showNavigation(): boolean {
     return this.config.showNavigation ?? true;
   }

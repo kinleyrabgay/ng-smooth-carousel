@@ -4,32 +4,34 @@
 
 A smooth, customizable carousel component for Angular, supporting both vertical and horizontal orientations.
 
-> **Note:** This package supports multiple Angular versions. For Angular 14, use version 1.1.1.
-
 ## Features
 
-- 🎯 Smooth scrolling animation
-- 🔄 Flexible orientation support (vertical & horizontal)
-- 🎨 Highly customizable navigation buttons and styling
-- 🔍 Built-in search functionality
-- 📱 Responsive design
-- 🎮 Multiple navigation options
-- 🎯 Custom item templates
-- 🔄 Auto-play support
-- 🔄 Loop functionality
+- 🎯 Smooth scrolling animation ✅
+- 🔄 Flexible orientation support (vertical & horizontal) ✅
+- 🎨 Highly customizable navigation buttons and styling ✅
+- 📱 Responsive design ✅
+- 🎮 Multiple navigation options ✅
+- 🎯 Custom item templates ✅
+- 🔄 Auto-play support ✅
+
+## Coming Soon
+
+- 🔍 Enhanced search filtering with advanced options ❌
+- ⚡ Click-hold-swap interaction for improved user experience ❌
+- 🔄 Loop functionality ❌
 
 ## Installation
 
 **For Angular 14:**
 
 ```typescript
-npm install ng-smooth-carousel@1.1.1
+npm install ng-smooth-carousel@14.0.0
 ```
 
 Or with yarn:
 
 ```typescript
-yarn add ng-smooth-carousel@1.1.1
+yarn add ng-smooth-carousel@14.0.0
 ```
 
 ## Usage
@@ -46,7 +48,7 @@ import { NgSmoothCarouselModule } from 'ng-smooth-carousel';
   ],
   // ...
 })
-export class YourModule { }
+export class YourModule {}
 ```
 
 2. For standalone components:
@@ -60,7 +62,7 @@ import { NgSmoothCarouselModule } from 'ng-smooth-carousel';
   standalone: true,
   imports: [NgSmoothCarouselModule]
 })
-export class YourComponent { }
+export class YourComponent {}
 ```
 
 3. Use in your template:
@@ -250,8 +252,8 @@ interface SearchStyle {
 
 | Angular Version | Package Version |
 |-----------------|-----------------|
-| Angular 14      | 1.1.1           |
-| Angular 15+     | Coming soon     |
+| Angular 14      | 14.0.0          |
+| Angular 17+     | Coming soon     |
 
 ## Browser Support
 
