@@ -168,14 +168,13 @@ export class YourComponent {
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `autoplay` | boolean | false | Enable autoplay |
-| `autoplayDelay` | string | '3000ms' | Delay between autoplay slides |
-| `loop` | boolean | false | Enable infinite loop |
-| `enableSearch` | boolean | false | Enable search functionality |
-| `searchPlaceholder` | string | 'Search...' | Placeholder text for search input |
-| `searchModalTitle` | string | 'Search Items' | Title for search modal |
-| `responsive` | boolean | true | Enable responsive behavior |
-| `enableOneItemScroll` | boolean | false | Enable scrolling one item at a time |
+| `autoplay` | boolean | false | Enable autoplay ✅ |
+| `autoplayDelay` | string | '3000ms' | Delay between autoplay slides ✅ |
+| `loop` | boolean | false | Enable infinite loop ❌ |
+| `enableSearch` | boolean | false | Enable search functionality ✅ |
+| `searchPlaceholder` | string | 'Search...' | Placeholder text for search input ✅ |
+| `searchModalTitle` | string | 'Search Items' | Title for search modal ✅ |
+| `enableOneItemScroll` | boolean | false | Enable scrolling one item at a time ✅ |
 
 ### Full-Width Single Item Carousel
 
