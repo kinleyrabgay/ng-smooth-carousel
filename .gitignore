@@ -43,4 +43,4 @@ Thumbs.db
 
 # Demo
 projects/angular14-demo/*
-projects/ng-smooth-carousel/node_modules/*
+projects/ng-smooth-carousel/node_modules

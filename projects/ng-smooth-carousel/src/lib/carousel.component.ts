@@ -106,7 +106,7 @@ import { CarouselConfig } from './carousel-config.interface';
       .nsc__item{flex:0 0 auto;box-sizing:border-box;border-radius:inherit}
       .nsc--vertical .nsc__item{width:100%}
       .nsc__item-default{background:#fff;height:100%;display:flex;align-items:center;justify-content:center;border:1px solid #e0e0e0;border-radius:inherit;padding:20px}
-      .nsc__nav-controls{position:absolute;bottom:16px;right:16px;display:flex;gap:24px;z-index:10}
+      .nsc__nav-controls{position:absolute;bottom:16px;right:16px;display:flex;gap:24px;z-index:5}
       .nsc__nav-button{background:#fff;border:1px solid #e0e0e0;width:32px;height:32px;padding:0;margin:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;z-index:1}
       .nsc__nav-icon{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:16px;line-height:1}
       .nsc__nav-button:hover:not(.nsc__nav-button--disabled){opacity:.8;transform:scale(1.05)}
