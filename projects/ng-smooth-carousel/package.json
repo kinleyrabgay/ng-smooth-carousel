@@ -1,11 +1,11 @@
 {
   "name": "ng-smooth-carousel",
-  "version": "14.0.0",
-  "description": "A smooth, customizable carousel component for Angular 14 applications",
+  "version": "17.0.0",
+  "description": "A smooth, customizable carousel component for Angular applications",
   "peerDependencies": {
-    "@angular/common": "^14.0.0",
-    "@angular/core": "^14.0.0",
-    "@angular/forms": "^14.0.0"
+    "@angular/common": ">=14.0.0",
+    "@angular/core": ">=14.0.0",
+    "@angular/forms": ">=14.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
@@ -18,7 +18,8 @@
     "ng-carousel",
     "angular-carousel",
     "responsive",
-    "typescript"
+    "typescript",
+    "standalone"
   ],
   "author": "Kinley Rabgay",
   "license": "MIT",

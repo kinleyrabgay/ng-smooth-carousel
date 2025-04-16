@@ -2,9 +2,18 @@
  * Public API Surface of ng-smooth-carousel
  */
 
-// Component and Module exports
-export * from './lib/carousel.component';
-export * from './lib/carousel.module';
+// Export component for standalone usage
+export { CarouselComponent } from './lib/carousel.component';
 
-// Interface exports
-export * from './lib/carousel-config.interface';
+// Export interfaces and types
+export { 
+  CarouselConfig,
+  ScrollSize,
+  NavButtonShape,
+  NavigationStyle,
+  SearchStyle,
+  ButtonStyle 
+} from './lib/carousel-config.interface';
+
+// Export module for Angular 14 compatibility
+export { NgSmoothCarouselModule } from './lib/carousel.module';

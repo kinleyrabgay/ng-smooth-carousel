@@ -11,12 +11,16 @@ import {
   HostListener,
   OnInit,
 } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Subject, fromEvent } from 'rxjs';
 import { takeUntil, debounceTime } from 'rxjs/operators';
 import { CarouselConfig } from './carousel-config.interface';
 
 @Component({
   selector: 'nsc',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   template: `
     <div [class.nsc--vertical]="isVertical" [ngStyle]="containerStyles" class="nsc">
       <div

@@ -1,6 +1,6 @@
 # ng-smooth-carousel
 
-![Angular 14 Compatible](https://img.shields.io/badge/Angular-14-brightgreen)
+![Angular 14 Compatible](https://img.shields.io/badge/Angular-14-brightgreen) ![Angular 17+ Compatible](https://img.shields.io/badge/Angular-17%2B-brightgreen)
 
 A smooth, customizable carousel component for Angular, supporting both vertical and horizontal orientations.
 
@@ -28,13 +28,21 @@ A smooth, customizable carousel component for Angular, supporting both vertical 
 npm install ng-smooth-carousel@14.0.0
 ```
 
+**For Angular 17 and above:**
+
+```typescript
+npm install ng-smooth-carousel@latest
+```
+
 Or with yarn:
 
 ```typescript
-yarn add ng-smooth-carousel@14.0.0
+yarn add ng-smooth-carousel@latest
 ```
 
 ## Usage
+
+### For Angular 14 (Module-based approach)
 
 1. Import the `NgSmoothCarouselModule` in your module:
 
@@ -51,21 +59,39 @@ import { NgSmoothCarouselModule } from 'ng-smooth-carousel';
 export class YourModule {}
 ```
 
-2. For standalone components:
+2. Use in your template:
+
+```html
+<!-- Horizontal Carousel (Default) -->
+<nsc [items]="items" [config]="carouselConfig">
+  <ng-template #carouselItem let-item>
+    <div class="custom-item">
+      {{ item.title }}
+    </div>
+  </ng-template>
+</nsc>
+```
+
+### For Angular 17+ (Standalone approach)
+
+1. For standalone components, import the `CarouselComponent` directly:
 
 ```typescript
 import { Component } from '@angular/core';
-import { NgSmoothCarouselModule } from 'ng-smooth-carousel';
+import { CarouselComponent, CarouselConfig } from 'ng-smooth-carousel';
 
 @Component({
-  // ...
+  selector: 'app-your-component',
   standalone: true,
-  imports: [NgSmoothCarouselModule]
+  imports: [CarouselComponent],
+  templateUrl: './your.component.html',
 })
-export class YourComponent {}
+export class YourComponent {
+  // Your component code
+}
 ```
 
-3. Use in your template:
+2. Use in your template:
 
 ```html
 <!-- Horizontal Carousel (Default) -->
@@ -87,7 +113,9 @@ export class YourComponent {}
 </nsc>
 ```
 
-4. Configure in your component:
+### Configuration Example
+
+Configure the carousel in your component:
 
 ```typescript
 import { Component } from '@angular/core';
@@ -283,7 +311,8 @@ interface SearchStyle {
 | Angular Version | Package Version |
 |-----------------|-----------------|
 | Angular 14      | 14.0.0          |
-| Angular 17+     | Coming soon     |
+| Angular 15-16   | 15.0.0          |
+| Angular 17+     | 17.0.0          |
 
 ## Browser Support
 

@@ -3,9 +3,17 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CarouselComponent } from './carousel.component';
 
+/**
+ * Module for ng-smooth-carousel
+ * @deprecated Use standalone import instead for Angular 15+ applications
+ * Example: `import { CarouselComponent } from 'ng-smooth-carousel';`
+ */
 @NgModule({
-  declarations: [CarouselComponent],
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule, 
+    FormsModule,
+    CarouselComponent  // Using standalone component in module imports
+  ],
   exports: [CarouselComponent],
 })
 export class NgSmoothCarouselModule {}
