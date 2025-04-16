@@ -1,6 +1,10 @@
 # ng-smooth-carousel
 
-A smooth, customizable carousel component for Angular 14, supporting both vertical and horizontal orientations.
+![Angular 14 Compatible](https://img.shields.io/badge/Angular-14-brightgreen)
+
+A smooth, customizable carousel component for Angular, supporting both vertical and horizontal orientations.
+
+> **Note:** This package supports multiple Angular versions. For Angular 14, use version 1.1.1.
 
 ## Features
 
@@ -16,8 +20,16 @@ A smooth, customizable carousel component for Angular 14, supporting both vertic
 
 ## Installation
 
-```bash
-npm install ng-smooth-carousel
+**For Angular 14:**
+
+```typescript
+npm install ng-smooth-carousel@1.1.1
+```
+
+Or with yarn:
+
+```typescript
+yarn add ng-smooth-carousel@1.1.1
 ```
 
 ## Usage
@@ -37,7 +49,21 @@ import { NgSmoothCarouselModule } from 'ng-smooth-carousel';
 export class YourModule { }
 ```
 
-2. Use in your template:
+2. For standalone components:
+
+```typescript
+import { Component } from '@angular/core';
+import { NgSmoothCarouselModule } from 'ng-smooth-carousel';
+
+@Component({
+  // ...
+  standalone: true,
+  imports: [NgSmoothCarouselModule]
+})
+export class YourComponent { }
+```
+
+3. Use in your template:
 
 ```html
 <!-- Horizontal Carousel (Default) -->
@@ -59,7 +85,7 @@ export class YourModule { }
 </nsc>
 ```
 
-3. Configure in your component:
+4. Configure in your component:
 
 ```typescript
 import { Component } from '@angular/core';
@@ -91,7 +117,6 @@ export class YourComponent {
     
     // Animation & Scroll
     animationDuration: '300ms',
-    animationTiming: 'ease',
     scrollSize: 'md',         // 'xs' to '10xl'
     
     // Features
@@ -112,29 +137,6 @@ export class YourComponent {
         backgroundColor: '#fff',
         color: '#333',
         border: '1px solid #ddd'
-      },
-      icons: {
-        next: '›',
-        prev: '‹',
-        search: '🔍',
-        vertical: {
-          next: '⌄',
-          prev: '⌃'
-        }
-      }
-    },
-    
-    // Search Configuration
-    searchPlaceholder: 'Search...',
-    searchModalTitle: 'Search Items',
-    searchStyle: {
-      button: {
-        backgroundColor: '#fff',
-        color: '#333'
-      },
-      modal: {
-        backgroundColor: '#fff',
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
       }
     }
   };
@@ -243,6 +245,13 @@ interface SearchStyle {
   modal?: Record<string, string>;
 }
 ```
+
+## Angular Version Compatibility
+
+| Angular Version | Package Version |
+|-----------------|-----------------|
+| Angular 14      | 1.1.1           |
+| Angular 15+     | Coming soon     |
 
 ## Browser Support
 

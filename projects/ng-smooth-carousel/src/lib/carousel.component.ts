@@ -50,34 +50,6 @@ import { CarouselConfig } from './carousel-config.interface';
   selector: 'nsc',
   template: `
     <div [class.nsc--vertical]="isVertical" [ngStyle]="containerStyles" class="nsc">
-      <div *ngIf="showNavigation" [style.--nav-size]="navigationSize" [style.--nav-padding]="navigationPadding" class="nsc__nav-area nsc__nav-area--prev">
-        <div class="nsc__nav-group">
-          <div class="nsc__search" *ngIf="showSearch">
-            <button [ngStyle]="searchButtonStyles" (click)="toggleSearchModal()" class="nsc__nav-button nsc__nav-button--search">
-              <span class="nsc__nav-icon" [ngStyle]="searchIconStyles">{{ searchIcon }}</span>
-            </button>
-            <div *ngIf="isSearchModalOpen" [class.nsc__dropdown--vertical]="isVertical" (click)="$event.stopPropagation()" class="nsc__dropdown" >
-              <input
-                type="text"
-                [placeholder]="searchPlaceholder"
-                [(ngModel)]="searchQuery"
-                (keyup.enter)="applySearch()"
-                class="nsc__search-input"
-                #searchInput
-              />
-            </div>
-          </div>
-          <button 
-            [class.nsc__nav-button--disabled]="!showPrevButton" 
-            [disabled]="!showPrevButton" 
-            [ngStyle]="prevButtonStyles" 
-            (click)="previous()" 
-            class="nsc__nav-button">
-            <span class="nsc__nav-icon" [ngStyle]="prevIconStyles">{{ prevIcon }}</span>
-          </button>
-        </div>
-      </div>
-
       <div
         #wrapper
         [style.--content-padding]="contentPadding"
@@ -117,7 +89,32 @@ import { CarouselConfig } from './carousel-config.interface';
         </div>
       </div>
 
-      <div *ngIf="showNavigation" [style.--nav-size]="navigationSize" [style.--nav-padding]="navigationPadding" class="nsc__nav-area nsc__nav-area--next">
+      <div *ngIf="showNavigation" class="nsc__nav-controls">
+        <div *ngIf="showSearch" class="nsc__search">
+          <button [ngStyle]="searchButtonStyles" (click)="toggleSearchModal()" class="nsc__nav-button nsc__nav-button--search">
+            <span class="nsc__nav-icon" [ngStyle]="searchIconStyles">{{ searchIcon }}</span>
+          </button>
+          <div *ngIf="isSearchModalOpen" [class.nsc__dropdown--vertical]="isVertical" (click)="$event.stopPropagation()" class="nsc__dropdown" >
+            <input
+              type="text"
+              [placeholder]="searchPlaceholder"
+              [(ngModel)]="searchQuery"
+              (keyup.enter)="applySearch()"
+              class="nsc__search-input"
+              #searchInput
+            />
+          </div>
+        </div>
+        
+        <button 
+          [class.nsc__nav-button--disabled]="!showPrevButton" 
+          [disabled]="!showPrevButton" 
+          [ngStyle]="prevButtonStyles" 
+          (click)="previous()" 
+          class="nsc__nav-button">
+          <span class="nsc__nav-icon" [ngStyle]="prevIconStyles">{{ prevIcon }}</span>
+        </button>
+        
         <button
           [class.nsc__nav-button--disabled]="!showNextButton"
           [disabled]="!showNextButton"
@@ -131,236 +128,30 @@ import { CarouselConfig } from './carousel-config.interface';
   `,
   styles: [
     `
-      .nsc {
-        position: relative;
-        overflow: hidden;
-        width: 100%;
-        display: flex;
-        align-items: stretch;
-      }
-
-      .nsc--vertical {
-        flex-direction: column;
-      }
-
-      .nsc__nav-area {
-        flex: 0 0 var(--nav-size, 60px);
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: white;
-        padding: 0 var(--nav-padding, 10px);
-      }
-
-      .nsc--vertical .nsc__nav-area {
-        height: var(--nav-size, 60px);
-        flex: 0 0 var(--nav-size, 60px);
-        width: 100%;
-        padding: var(--nav-padding, 10px) 0;
-      }
-
-      .nsc__wrapper {
-        flex: 1;
-        overflow: hidden;
-        position: relative;
-        padding: var(--content-padding, 10px) 0;
-      }
-
-      .nsc--vertical .nsc__wrapper {
-        padding: 0 var(--content-padding, 10px);
-      }
-
-      .nsc__track {
-        display: flex;
-        flex-wrap: nowrap;
-        transition: transform var(--animation-duration, 0.3s) var(--animation-timing, ease);
-        width: fit-content;
-      }
-
-      .nsc__track--vertical {
-        flex-direction: column;
-        width: 100%;
-        height: fit-content;
-      }
-
-      .nsc__item {
-        flex: 0 0 auto;
-      }
-
-      .nsc--vertical .nsc__item {
-        width: 100%;
-      }
-
-      .nsc__item-default {
-        background: white;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid #e0e0e0;
-        border-radius: 4px;
-        padding: 20px;
-      }
-
-      .nsc__nav-button {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: white;
-        border: 1px solid #e0e0e0;
-        width: 32px;
-        height: 32px;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        z-index: 1;
-      }
-
-      .nsc__nav-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-        font-size: 16px;
-        line-height: 1;
-      }
-
-      .nsc__nav-button:hover:not(.nsc__nav-button--disabled) {
-        opacity: 0.8;
-        transform: translate(-50%, -50%) scale(1.05);
-      }
-
-      .nsc--vertical .nsc__nav-button:hover:not(.nsc__nav-button--disabled) {
-        transform: scale(1.05);
-      }
-
-      .nsc__nav-button--disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-        background-color: #f5f5f5;
-        border-color: #ddd;
-        transition: all 0.2s ease;
-      }
-
-      .nsc__nav-group {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        height: 100%;
-      }
-
-      .nsc--vertical .nsc__nav-group {
-        flex-direction: row;
-        justify-content: center;
-      }
-
-      .nsc--vertical .nsc__search {
-        position: relative;
-        bottom: auto;
-        left: auto;
-        transform: none;
-        margin-right: 16px;
-      }
-
-      .nsc--vertical .nsc__nav-button {
-        position: static;
-        transform: none;
-      }
-
-      .nsc__search {
-        position: absolute;
-        bottom: 50px;
-        left: 50%;
-        z-index: 1000;
-        transform: translateX(-50%);
-      }
-
-      .nsc__nav-button--search {
-        position: static;
-        transform: none;
-      }
-        
-      .nsc__dropdown {
-        position: absolute;
-        background: white;
-        border: 1px solid #e0e0e0;
-        border-radius: 4px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
-        min-width: 200px;
-      }
-
-      .nsc--vertical .nsc__dropdown {
-        left: calc(100% + 8px);
-        top: 0;
-      }
-
-      .nsc__dropdown--vertical {
-        top: 100%;
-        left: 0;
-        margin-top: 8px;
-      }
-
-      .nsc__search-input {
-        width: 100%;
-        padding: 8px 12px;
-        border: none;
-        font-size: 14px;
-        outline: none;
-      }
-
-      .nsc__search-input:focus {
-        background: #f8f8f8;
-      }
-
-      .nsc__empty-state {
-        height: 100%;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-      }
-
-      .nsc__empty-icon {
-        font-size: 48px;
-        color: #999;
-        line-height: 1;
-      }
-
-      .nsc__empty-text {
-        color: #666;
-        font-size: 14px;
-        margin: 0;
-      }
-
-      .nsc__reset-button {
-        background: none;
-        border: none;
-        padding: 6px 12px;
-        font-size: 13px;
-        color: #007bff;
-        cursor: pointer;
-        transition: opacity 0.2s ease;
-      }
-
-      .nsc__reset-button:hover {
-        opacity: 0.7;
-      }
-
-      .nsc--vertical .nsc__nav-button .nsc__nav-icon {
-        transform: rotate(90deg);
-      }
+      .nsc{position:relative;overflow:hidden;width:100%;display:flex;flex-direction:column}
+      .nsc--vertical{flex-direction:column}
+      .nsc__wrapper{flex:1;overflow:hidden;position:relative;padding:var(--content-padding,10px) 0;width:100%}
+      .nsc--vertical .nsc__wrapper{padding:0 var(--content-padding,10px)}
+      .nsc__track{display:flex;flex-wrap:nowrap;transition:transform var(--animation-duration,.3s) var(--animation-timing,ease);width:fit-content;min-width:100%}
+      .nsc__track--vertical{flex-direction:column;width:100%;height:fit-content}
+      .nsc__item{flex:0 0 auto;box-sizing:border-box}
+      .nsc--vertical .nsc__item{width:100%}
+      .nsc__item-default{background:#fff;height:100%;display:flex;align-items:center;justify-content:center;border:1px solid #e0e0e0;border-radius:4px;padding:20px}
+      .nsc__nav-controls{position:absolute;bottom:16px;right:16px;display:flex;gap:24px;z-index:10}
+      .nsc__nav-button{background:#fff;border:1px solid #e0e0e0;width:32px;height:32px;padding:0;margin:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;z-index:1}
+      .nsc__nav-icon{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:16px;line-height:1}
+      .nsc__nav-button:hover:not(.nsc__nav-button--disabled){opacity:.8;transform:scale(1.05)}
+      .nsc__nav-button--disabled{opacity:.4;cursor:not-allowed;background-color:#f5f5f5;border-color:#ddd;transition:all .2s ease}
+      .nsc__search{position:relative}
+      .nsc__dropdown{position:absolute;background:#fff;border:1px solid #e0e0e0;border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.1);z-index:1000;min-width:200px;top:100%;right:0;margin-top:8px}
+      .nsc__dropdown--vertical{right:auto;left:100%;top:0;margin-top:0;margin-left:8px}
+      .nsc__search-input{width:100%;padding:8px 12px;border:none;border-radius:4px;font-size:14px;outline:none}
+      .nsc__empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;color:#666}
+      .nsc__empty-icon{font-size:32px;margin-bottom:12px}
+      .nsc__empty-text{font-size:16px;margin-bottom:12px}
+      .nsc__reset-button{background:none;border:none;padding:6px 12px;font-size:13px;color:#007bff;cursor:pointer;transition:opacity .2s ease}
+      .nsc__reset-button:hover{opacity:.7}
+      .nsc--vertical .nsc__nav-button .nsc__nav-icon{transform:rotate(90deg)}
     `,
   ],
 })
@@ -374,8 +165,10 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 
   private currentTranslate = 0;
+  private currentIndex = 0;
   private destroy$ = new Subject<void>();
   private autoplayInterval?: ReturnType<typeof setInterval>;
+  private itemWidths: number[] = [];
 
   private readonly scrollSizeMap: Record<string, number> = {
     'xs': 50,
@@ -392,6 +185,7 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
     '8xl': 600,
     '9xl': 650,
     '10xl': 700,
+    'full': 1,
   };
 
   showPrevButton = false;
@@ -455,6 +249,7 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
     this.setupAutoplay();
     
     setTimeout(() => {
+      this.calculateItemWidths();
       this.checkOverflow();
     });
   }
@@ -517,7 +312,10 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (!track || !wrapper) return;
 
-    if (this.isVertical) {
+    if (this.config.enableOneItemScroll) {
+      this.showPrevButton = this.currentIndex > 0;
+      this.showNextButton = this.currentIndex < this.filteredItems.length - 1;
+    } else if (this.isVertical) {
       this.showPrevButton = this.currentTranslate > 0;
       this.showNextButton = 
         track.offsetHeight - this.currentTranslate > wrapper.offsetHeight;
@@ -530,29 +328,113 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
+  private calculateItemWidths(): void {
+    if (!this.trackElement || !this.wrapperElement) return;
+    
+    const track = this.trackElement.nativeElement;
+    const wrapper = this.wrapperElement.nativeElement;
+    const items = Array.from(track.children) as HTMLElement[];
+    
+    // When items should take up 100% of parent width
+    if (this.config.itemWidth === '100%' && this.config.enableOneItemScroll) {
+      // Just use the parent width for all items
+      const parentWidth = wrapper.offsetWidth;
+      this.itemWidths = items.map(() => parentWidth);
+      return;
+    }
+    
+    this.itemWidths = items.map(item => {
+      // Get the full width including margins
+      const style = window.getComputedStyle(item);
+      const width = item.offsetWidth;
+      const marginLeft = parseInt(style.marginLeft || '0', 10);
+      const marginRight = parseInt(style.marginRight || '0', 10);
+      
+      return width + marginLeft + marginRight;
+    });
+  }
+
   private getScrollAmount(): number {
+    if (this.config.enableOneItemScroll && this.itemWidths.length > 0) {
+      if (this.currentIndex < this.itemWidths.length) {
+        return this.itemWidths[this.currentIndex];
+      }
+      // Fallback to the first item's width if currentIndex is out of bounds
+      return this.itemWidths[0] || this.wrapperElement.nativeElement.offsetWidth;
+    }
+    
     const size = this.config.scrollSize || 'sm';
+    
+    // If scrollSize is numeric, use it as the number of items to scroll
+    if (size === 'full') {
+      // Use the wrapper's width (parent container) instead of the screen width
+      return this.wrapperElement.nativeElement.offsetWidth;
+    }
+    
     return this.scrollSizeMap[size] || this.scrollSizeMap['sm'];
   }
 
   previous(): void {
-    const scrollAmount = this.getScrollAmount();
-    this.currentTranslate = Math.max(0, this.currentTranslate - scrollAmount);
+    if (this.config.enableOneItemScroll) {
+      if (this.currentIndex > 0) {
+        this.currentIndex--;
+        // Calculate the exact position based on previous item widths
+        if (this.currentIndex === 0) {
+          // If we're at the first item, ensure we're at the beginning
+          this.currentTranslate = 0;
+        } else {
+          // Calculate position based on widths of all previous items plus gaps
+          const itemWidth = this.itemWidths[this.currentIndex] || this.wrapperElement.nativeElement.offsetWidth;
+          
+          // If we have gaps, consider them too
+          const gapWidth = this.config.itemGap ? 
+            parseInt(this.config.itemGap.replace('px', ''), 10) : 0;
+          
+          this.currentTranslate = this.currentIndex * (itemWidth + gapWidth);
+        }
+      }
+    } else {
+      const scrollAmount = this.getScrollAmount();
+      this.currentTranslate = Math.max(0, this.currentTranslate - scrollAmount);
+    }
     this.checkOverflow();
   }
 
   next(): void {
     const track = this.trackElement.nativeElement;
     const wrapper = this.wrapperElement.nativeElement;
-    const scrollAmount = this.getScrollAmount();
-    const maxTranslate = this.isVertical
-      ? track.offsetHeight - wrapper.offsetHeight
-      : track.offsetWidth - wrapper.offsetWidth;
+    
+    if (this.config.enableOneItemScroll) {
+      if (this.currentIndex < this.filteredItems.length - 1) {
+        // Get the width of the current item
+        const itemWidth = this.itemWidths[this.currentIndex] || wrapper.offsetWidth;
+        
+        // If we have gaps, consider them too
+        const gapWidth = this.config.itemGap ? 
+          parseInt(this.config.itemGap.replace('px', ''), 10) : 0;
+        
+        this.currentIndex++;
+        
+        // Calculate position based on all previous items plus gaps
+        if (this.config.itemWidth === '100%') {
+          // For 100% width items, simply multiply by the index
+          this.currentTranslate = this.currentIndex * (itemWidth + gapWidth);
+        } else {
+          // For variable width items, add the current item width
+          this.currentTranslate += itemWidth + gapWidth;
+        }
+      }
+    } else {
+      const scrollAmount = this.getScrollAmount();
+      const maxTranslate = this.isVertical
+        ? track.offsetHeight - wrapper.offsetHeight
+        : track.offsetWidth - wrapper.offsetWidth;
 
-    this.currentTranslate = Math.min(
-      maxTranslate,
-      this.currentTranslate + scrollAmount
-    );
+      this.currentTranslate = Math.min(
+        maxTranslate,
+        this.currentTranslate + scrollAmount
+      );
+    }
     this.checkOverflow();
   }
 
@@ -649,6 +531,12 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
       boxSizing: 'border-box'
     };
 
+    // Ensure width is relative to parent when set to 100%
+    if (this.config.itemWidth === '100%' && this.config.enableOneItemScroll) {
+      baseStyles['width'] = '100%';
+      baseStyles['maxWidth'] = '100%';
+    }
+
     if (!this.config.itemGap) return baseStyles;
 
     const marginProperty = this.isVertical ? 'marginTop' : 'marginLeft';
@@ -656,14 +544,6 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
       ...baseStyles,
       [marginProperty]: index === 0 ? '0' : this.config.itemGap
     };
-  }
-
-  get navigationSize(): string {
-    return this.config.navigationSize || '60px';
-  }
-
-  get navigationPadding(): string {
-    return this.config.navigationPadding || '4px';
   }
 
   get contentPadding(): string {
@@ -725,6 +605,7 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     this.currentTranslate = 0;
+    this.currentIndex = 0;
     this.checkOverflow();
     this.closeSearchModal();
   }
@@ -749,7 +630,13 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
     this.searchQuery = '';
     this.filteredItems = this.items;
     this.currentTranslate = 0;
-    this.checkOverflow();
+    this.currentIndex = 0;
+    
+    // Recalculate item widths when items change
+    setTimeout(() => {
+      this.calculateItemWidths();
+      this.checkOverflow();
+    });
   }
 
   /** Get navigation icons based on configuration and orientation */

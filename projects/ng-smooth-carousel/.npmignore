@@ -1,0 +1,58 @@
+# IDE files
+.idea/
+.vscode/
+.editorconfig
+
+# Build files
+*.tgz
+*.tar.gz
+*.zip
+.DS_Store
+Thumbs.db
+
+# Test files
+*.spec.ts
+*.test.ts
+test/
+tests/
+testing/
+tsconfig.spec.json
+karma.conf.js
+test.ts
+
+# Source maps
+*.map
+*.js.map
+
+# Git files
+.git/
+.github/
+.gitignore
+.gitattributes
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+
+# Misc
+node_modules/
+coverage/
+tmp/
+.angular/
+.tmp/
+.sass-cache/
+.cache/
+.history/
+
+# Documentation
+docs/
+doc/
+documentation/
+
+# Development configs
+*.development.*
+*.config.js
+*.config.ts
+!ng-package.json
+!package.json 

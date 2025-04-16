@@ -6,18 +6,11 @@
     "declaration": true,
     "declarationMap": true,
     "inlineSources": true,
-    "types": [],
-    "target": "es2015",
-    "lib": [
-      "dom",
-      "es2018"
-    ]
+    "types": []
   },
   "angularCompilerOptions": {
     "skipTemplateCodegen": true,
     "strictMetadataEmit": true,
-    "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true,
     "enableResourceInlining": true
   },
   "exclude": [

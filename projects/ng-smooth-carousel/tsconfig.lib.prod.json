@@ -1,20 +1,9 @@
 {
   "extends": "./tsconfig.lib.json",
   "compilerOptions": {
-    "declarationMap": false,
-    "target": "es2015",
-    "lib": [
-      "dom",
-      "es2018"
-    ]
+    "declarationMap": false
   },
   "angularCompilerOptions": {
-    "compilationMode": "partial",
-    "enableIvy": true,
-    "skipTemplateCodegen": true,
-    "strictMetadataEmit": true,
-    "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true,
     "enableResourceInlining": true
   }
 }

@@ -96,6 +96,8 @@ export interface CarouselConfig {
   animate?: boolean;
   /** Enable responsive behavior */
   responsive?: boolean;
+  /** Enable scrolling one full item at a time */
+  enableOneItemScroll?: boolean;
 }
 
 export interface ButtonStyle {

@@ -23,13 +23,6 @@
             }
           },
           "defaultConfiguration": "production"
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "tsConfig": "projects/ng-smooth-carousel/tsconfig.spec.json",
-            "polyfills": ["zone.js", "zone.js/testing"]
-          }
         }
       }
     },
@@ -104,22 +97,6 @@
             }
           },
           "defaultConfiguration": "development"
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/angular14-demo/src/test.ts",
-            "polyfills": "projects/angular14-demo/src/polyfills.ts",
-            "tsConfig": "projects/angular14-demo/tsconfig.spec.json",
-            "karmaConfig": "projects/angular14-demo/karma.conf.js",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "projects/angular14-demo/src/favicon.ico",
-              "projects/angular14-demo/src/assets"
-            ],
-            "styles": ["projects/angular14-demo/src/styles.scss"],
-            "scripts": []
-          }
         }
       }
     }

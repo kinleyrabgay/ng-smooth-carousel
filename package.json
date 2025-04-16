@@ -1,6 +1,6 @@
 {
   "name": "ng-smooth-carousel",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A smooth, customizable carousel component for Angular applications",
   "author": "Kinley Rabgay",
   "license": "MIT",
@@ -19,12 +19,15 @@
   ],
   "scripts": {
     "ng": "ng",
-    "start": "ng serve angular14-demo",
+    "start": "ng serve",
     "build": "ng build",
-    "build:ng14": "npx ng-packagr -p projects/ng-smooth-carousel && node scripts/setup-package.js",
+    "build:lib": "cd projects/ng-smooth-carousel && ng-packagr -p ng-package.json",
+    "build:demo": "ng build angular14-demo --configuration production",
     "demo": "ng serve angular14-demo --open",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "lint": "ng lint",
+    "prepare:package": "cp README.md CHANGELOG.md LICENSE dist/ng-smooth-carousel/",
+    "publish:lib": "npm run build:lib && npm run prepare:package && cd dist/ng-smooth-carousel && npm publish"
   },
   "private": false,
   "dependencies": {
@@ -44,15 +47,9 @@
     "@angular-devkit/build-angular": "^14.0.0",
     "@angular/cli": "^14.0.0",
     "@angular/compiler-cli": "^14.0.0",
-    "@types/jasmine": "~4.0.0",
     "@types/node": "^16.18.126",
-    "jasmine-core": "~4.1.0",
-    "karma": "~6.3.0",
-    "karma-chrome-launcher": "~3.1.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.0.0",
-    "karma-jasmine-html-reporter": "~1.7.0",
     "ng-packagr": "^14.0.0",
+    "terser": "^5.39.0",
     "typescript": "~4.7.2"
   },
   "peerDependencies": {

@@ -1,24 +1,35 @@
 # ng-smooth-carousel
 
-A smooth, customizable carousel component for Angular 14+ applications, supporting both vertical and horizontal orientations.
+![Angular 14 Compatible](https://img.shields.io/badge/Angular-14-brightgreen)
+
+A smooth, customizable carousel component for Angular, supporting both vertical and horizontal orientations.
+
+> **Note:** This package supports multiple Angular versions. For Angular 14, use version 1.1.1.
 
 ## Features
 
-- 🎯 Smooth scrolling animation ✅
-- 🔄 Flexible orientation support (vertical & horizontal) ✅
-- 🎨 Highly customizable navigation buttons and styling ✅
-- 🔍 Built-in search functionality ✅
-- 📱 Responsive design ✅
-- ⚡ Efficient rendering with virtual scrolling ✅
-- 🎮 Multiple navigation options ✅
-- 🎯 Custom item templates ✅
-- 🔄 Auto-play support ✅
-- 🔄 Loop functionality ❌
+- 🎯 Smooth scrolling animation
+- 🔄 Flexible orientation support (vertical & horizontal)
+- 🎨 Highly customizable navigation buttons and styling
+- 🔍 Built-in search functionality
+- 📱 Responsive design
+- 🎮 Multiple navigation options
+- 🎯 Custom item templates
+- 🔄 Auto-play support
+- 🔄 Loop functionality
 
 ## Installation
 
-```bash
-npm install ng-smooth-carousel
+**For Angular 14:**
+
+```typescript
+npm install ng-smooth-carousel@1.1.1
+```
+
+Or with yarn:
+
+```typescript
+yarn add ng-smooth-carousel@1.1.1
 ```
 
 ## Usage
@@ -142,11 +153,26 @@ export class YourComponent {
 | `containerHeight` | string | 'auto' | Height of the carousel container |
 | `itemWidth` | string | '200px' | Width of each carousel item |
 | `itemHeight` | string | '100%' | Height of each carousel item |
-| `itemGap` | string | undefined | Gap between carousel items |
+| `itemGap` | string | '0px' | Gap between carousel items |
 | `showNavigation` | boolean | true | Show/hide navigation buttons |
 | `orientation` | 'horizontal' \| 'vertical' | 'horizontal' | Carousel orientation |
 | `animationDuration` | string | '300ms' | Duration of scroll animation |
 | `animationTiming` | string | 'ease' | Timing function for animation |
+| `contentPadding` | string | '10px' | Padding for the content area |
+| `navigationSize` | string | '60px' | Size of navigation areas |
+| `navigationPadding` | string | '10px' | Padding for navigation areas |
+
+### Advanced Features
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `autoplay` | boolean | false | Enable autoplay |
+| `autoplayDelay` | string | '3000ms' | Delay between autoplay slides |
+| `loop` | boolean | false | Enable infinite loop |
+| `enableSearch` | boolean | false | Enable search functionality |
+| `searchPlaceholder` | string | 'Search...' | Placeholder text for search input |
+| `searchModalTitle` | string | 'Search Items' | Title for search modal |
+| `responsive` | boolean | true | Enable responsive behavior |
 
 ### Scroll Sizes
 
@@ -175,16 +201,16 @@ type ScrollSize =
 The `buttonShape` property in `navigationStyle` accepts:
 
 ```typescript
-type ButtonShape = 'circle' | 'rounded' | 'square';
+type NavButtonShape = 'circle' | 'rounded' | 'square';
 ```
 
-### Navigation Style Interface
+### NavigationStyle Interface
 
 ```typescript
 interface NavigationStyle {
-  buttonShape?: ButtonShape;
-  nextButton?: ButtonStyle;
-  prevButton?: ButtonStyle;
+  buttonShape?: NavButtonShape;
+  nextButton?: Record<string, string>;
+  prevButton?: Record<string, string>;
   icons?: {
     next?: string;
     prev?: string;
@@ -195,17 +221,37 @@ interface NavigationStyle {
     };
   };
 }
+```
 
+### ButtonStyle Interface
+
+```typescript
 interface ButtonStyle {
   backgroundColor?: string;
   color?: string;
-  border?: string;
+  borderRadius?: string;
   padding?: string;
-  width?: string;
-  height?: string;
-  [key: string]: string | undefined;
+  fontSize?: string;
+  border?: string;
+  boxShadow?: string;
 }
 ```
+
+### SearchStyle Interface
+
+```typescript
+interface SearchStyle {
+  button?: Record<string, string>;
+  modal?: Record<string, string>;
+}
+```
+
+## Angular Version Compatibility
+
+| Angular Version | Package Version |
+|-----------------|-----------------|
+| Angular 14      | 1.1.1           |
+| Angular 15+     | Coming soon     |
 
 ## Browser Support
 
@@ -220,7 +266,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Support
 
@@ -228,4 +274,4 @@ For support, please create an issue in the [GitHub repository](https://github.co
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for a list of changes and updates.
+See CHANGELOG.md for a list of changes and updates.
