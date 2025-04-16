@@ -15,19 +15,6 @@ import { Subject, fromEvent } from 'rxjs';
 import { takeUntil, debounceTime } from 'rxjs/operators';
 import { CarouselConfig } from './carousel-config.interface';
 
-/**
- * A smooth, customizable carousel component for Angular applications.
- * 
- * @description
- * This component provides a flexible carousel/slider with the following features:
- * - Horizontal and vertical orientations
- * - Customizable navigation buttons with different shapes and styles
- * - Search functionality with filtering
- * - Responsive design with configurable item sizes
- * - Custom item templates
- * - Autoplay with configurable delay
- * - Loop functionality
- */
 @Component({
   selector: 'nsc',
   template: `
@@ -110,7 +97,7 @@ import { CarouselConfig } from './carousel-config.interface';
   `,
   styles: [
     `
-      .nsc{position:relative;overflow:hidden;width:100%;display:flex;flex-direction:column}
+      .nsc{position:relative;overflow:hidden;display:flex;flex-direction:column}
       .nsc--vertical{flex-direction:column}
       .nsc__wrapper{flex:1;overflow:hidden;position:relative;padding:var(--content-padding,10px) 0;width:100%}
       .nsc--vertical .nsc__wrapper{padding:0 var(--content-padding,10px)}
@@ -151,6 +138,7 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private autoplayInterval?: ReturnType<typeof setInterval>;
   private itemWidths: number[] = [];
+  private containerWidth: number = 0;
 
   private readonly scrollSizeMap = {
     'xs': 50, 'sm': 100, 'md': 150, 'lg': 200, 'xl': 250,
@@ -206,6 +194,7 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
     this.setupAutoplay();
     
     setTimeout(() => {
+      this.updateContainerWidth();
       this.calculateItemWidths();
       this.checkOverflow();
     });
@@ -246,7 +235,16 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   private setupResizeListener(): void {
     fromEvent(window, 'resize')
       .pipe(debounceTime(200), takeUntil(this.destroy$))
-      .subscribe(() => this.checkOverflow());
+      .subscribe(() => {
+        this.updateContainerWidth();
+        this.calculateItemWidths();
+        this.checkOverflow();
+      });
+  }
+
+  private updateContainerWidth(): void {
+    if (!this.wrapperElement) return;
+    this.containerWidth = this.wrapperElement.nativeElement.offsetWidth;
   }
 
   private checkOverflow(): void {
@@ -383,15 +381,22 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getItemStyle(index: number): Record<string, string> {
     const s: Record<string, string> = {
-      width: this.config.itemWidth || '200px',
       height: this.config.itemHeight || '100%',
       flexShrink: '0',
       flexGrow: '0',
       boxSizing: 'border-box'
     };
 
-    if (this.config.itemWidth === '100%' && this.config.enableOneItemScroll) {
-      s['width'] = s['maxWidth'] = '100%';
+    // Set the width based on the itemWidth configuration
+    if (this.config.itemWidth) {
+      // For percentage width with enableOneItemScroll, use the wrapper width
+      if (this.config.itemWidth === '100%' && this.config.enableOneItemScroll && this.containerWidth > 0) {
+        s['width'] = s['maxWidth'] = this.containerWidth + 'px';
+      } else {
+        s['width'] = this.config.itemWidth;
+      }
+    } else {
+      s['width'] = this.config.itemWidth || '200px';
     }
 
     if (!this.config.itemGap) return s;
@@ -450,6 +455,7 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
     this.currentTranslate = 0;
     this.currentIndex = 0;
     setTimeout(() => {
+      this.updateContainerWidth();
       this.calculateItemWidths();
       this.checkOverflow();
     });

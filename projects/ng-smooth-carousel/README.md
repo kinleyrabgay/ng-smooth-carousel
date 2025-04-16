@@ -175,6 +175,21 @@ export class YourComponent {
 | `searchPlaceholder` | string | 'Search...' | Placeholder text for search input |
 | `searchModalTitle` | string | 'Search Items' | Title for search modal |
 | `responsive` | boolean | true | Enable responsive behavior |
+| `enableOneItemScroll` | boolean | false | Enable scrolling one item at a time |
+
+### Full-Width Single Item Carousel
+
+To create a carousel that displays and scrolls through one full-width item at a time (common for hero sliders or product showcases), use the following configuration:
+
+```typescript
+carouselConfig: CarouselConfig = {
+  itemWidth: '100%',        // Set item width to 100%
+  itemGap: '0px',           // Remove gap between items
+  enableOneItemScroll: true // Enable one-item-at-a-time scrolling
+}
+```
+
+This configuration creates a clean, full-width carousel where each item takes up the entire container width and scrolls individually.
 
 ### Scroll Sizes
 
