@@ -182,10 +182,12 @@ To create a carousel that displays and scrolls through one full-width item at a 
 
 ```typescript
 carouselConfig: CarouselConfig = {
-  itemWidth: '100%',        // Set item width to 100%
-  itemGap: '0px',           // Remove gap between items
-  enableOneItemScroll: true // Enable one-item-at-a-time scrolling
-}
+  containerWidth: '600px',
+  containerHeight: '300px',
+  itemWidth: '100%',
+  itemHeight: '100%',
+  enableOneItemScroll: true,
+};
 ```
 
 This configuration creates a clean, full-width carousel where each item takes up the entire container width and scrolls individually.

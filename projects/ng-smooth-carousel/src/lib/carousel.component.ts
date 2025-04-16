@@ -381,13 +381,11 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getItemStyle(index: number): Record<string, string> {
     const s: Record<string, string> = {
-      height: this.config.itemHeight || '100%',
       flexShrink: '0',
       flexGrow: '0',
       boxSizing: 'border-box'
     };
 
-    // Set the width based on the itemWidth configuration
     if (this.config.itemWidth) {
       // For percentage width with enableOneItemScroll, use the wrapper width
       if (this.config.itemWidth === '100%' && this.config.enableOneItemScroll && this.containerWidth > 0) {
@@ -396,7 +394,22 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
         s['width'] = this.config.itemWidth;
       }
     } else {
-      s['width'] = this.config.itemWidth || '200px';
+      s['width'] = '100%';
+    }
+    
+    if (this.config.itemHeight) {
+      if (this.config.itemHeight === '100%' && this.config.enableOneItemScroll && this.wrapperElement) {
+        const containerHeight = this.wrapperElement.nativeElement.offsetHeight;
+        if (containerHeight > 0) {
+          s['height'] = s['maxHeight'] = containerHeight + 'px';
+        } else {
+          s['height'] = this.config.itemHeight;
+        }
+      } else {
+        s['height'] = this.config.itemHeight;
+      }
+    } else {
+      s['height'] = 'auto';
     }
 
     if (!this.config.itemGap) return s;
