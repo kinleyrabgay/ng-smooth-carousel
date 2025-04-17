@@ -31,7 +31,7 @@ import { CarouselConfig } from './carousel-config.interface';
           [style.--animation-duration]="animationDuration"
           [style.--animation-timing]="animationTiming"
           class="nsc__track">
-          <ng-container *ngIf="filteredItems.length > 0; else noResults">
+          <ng-container *ngIf="filteredItems?.length">
             <ng-container *ngFor="let item of filteredItems; let i = index">
               <div class="nsc__item" [ngStyle]="getItemStyle(i)">
                 <ng-container *ngIf="itemTemplate; else defaultTemplate">

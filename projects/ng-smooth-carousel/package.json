@@ -1,6 +1,6 @@
 {
   "name": "ng-smooth-carousel",
-  "version": "14.0.4",
+  "version": "14.0.5",
   "description": "A smooth, customizable carousel component for Angular 14 applications",
   "peerDependencies": {
     "@angular/common": "^14.0.0",
