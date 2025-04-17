@@ -47,7 +47,7 @@ import { CarouselConfig } from './carousel-config.interface';
           </ng-container>
           
           <ng-template #emptyState>
-            <div class="nsc__item" [ngStyle]="getItemStyle(0)">
+            <div class="nsc__empty-container" [ngStyle]="getEmptyStateContainerStyle()">
               <ng-container *ngIf="emptyStateTemplate; else defaultEmptyState">
                 <ng-container *ngTemplateOutlet="emptyStateTemplate; context: { $implicit: 'No items found' }"></ng-container>
               </ng-container>
@@ -113,6 +113,8 @@ import { CarouselConfig } from './carousel-config.interface';
       .nsc__item{flex:0 0 auto;box-sizing:border-box;border-radius:inherit}
       .nsc--vertical .nsc__item{width:100%}
       .nsc__item-default{background:#fff;height:100%;display:flex;align-items:center;justify-content:center;border:1px solid #e0e0e0;border-radius:inherit;padding:20px}
+      .nsc__empty-container{width:100%;box-sizing:border-box;border-radius:inherit}
+      .nsc__empty-state{background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;color:#666;border-radius:inherit;min-height:200px}
       .nsc__nav-controls{position:absolute;bottom:16px;right:16px;display:flex;gap:24px;z-index:5}
       .nsc__nav-button{background:#fff;border:1px solid #e0e0e0;width:32px;height:32px;padding:0;margin:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;z-index:1}
       .nsc__nav-icon{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:16px;line-height:1}
@@ -122,7 +124,6 @@ import { CarouselConfig } from './carousel-config.interface';
       .nsc__dropdown{position:absolute;background:#fff;border:1px solid #e0e0e0;border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.1);z-index:1000;min-width:200px;top:100%;right:0;margin-top:8px}
       .nsc__dropdown--vertical{right:auto;left:100%;top:0;margin-top:0;margin-left:8px}
       .nsc__search-input{width:100%;padding:8px 12px;border:none;border-radius:4px;font-size:14px;outline:none}
-      .nsc__empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;color:#666}
       .nsc__empty-icon{font-size:32px;margin-bottom:12px}
       .nsc__empty-text{font-size:16px;margin-bottom:12px}
       .nsc__reset-button{background:none;border:none;padding:6px 12px;font-size:13px;color:#007bff;cursor:pointer;transition:opacity .2s ease}
@@ -694,5 +695,13 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
 
   get showNavigation(): boolean {
     return this.config.showNavigation ?? true;
+  }
+
+  getEmptyStateContainerStyle(): Record<string, string> {
+    return {
+      width: '100%',
+      boxSizing: 'border-box',
+      borderRadius: 'inherit'
+    };
   }
 }
