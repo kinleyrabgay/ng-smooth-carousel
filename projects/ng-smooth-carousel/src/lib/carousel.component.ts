@@ -31,7 +31,7 @@ import { CarouselConfig } from './carousel-config.interface';
           [style.--animation-duration]="animationDuration"
           [style.--animation-timing]="animationTiming"
           class="nsc__track">
-          <ng-container *ngIf="filteredItems?.length">
+          <ng-container *ngIf="filteredItems?.length; else emptyState">
             <ng-container *ngFor="let item of filteredItems; let i = index">
               <div class="nsc__item" [ngStyle]="getItemStyle(i)">
                 <ng-container *ngIf="itemTemplate; else defaultTemplate">
@@ -45,15 +45,21 @@ import { CarouselConfig } from './carousel-config.interface';
               </div>
             </ng-container>
           </ng-container>
-          <ng-template #noResults>
+          
+          <ng-template #emptyState>
             <div class="nsc__item" [ngStyle]="getItemStyle(0)">
-              <div class="nsc__empty-state">
-                <div class="nsc__empty-icon">📭</div>
-                <div class="nsc__empty-text">No items found</div>
-                <button class="nsc__reset-button" (click)="resetSearch()">
-                  Show all items
-                </button>
-              </div>
+              <ng-container *ngIf="emptyStateTemplate; else defaultEmptyState">
+                <ng-container *ngTemplateOutlet="emptyStateTemplate; context: { $implicit: 'No items found' }"></ng-container>
+              </ng-container>
+              <ng-template #defaultEmptyState>
+                <div class="nsc__empty-state">
+                  <div class="nsc__empty-icon">📭</div>
+                  <div class="nsc__empty-text">No items found</div>
+                  <button class="nsc__reset-button" (click)="resetSearch()">
+                    Show all items
+                  </button>
+                </div>
+              </ng-template>
             </div>
           </ng-template>
         </div>
@@ -130,6 +136,7 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() config: CarouselConfig = {};
 
   @ContentChild('carouselItem') itemTemplate!: TemplateRef<any>;
+  @ContentChild('emptyState') emptyStateTemplate!: TemplateRef<any>;
   @ViewChild('track') trackElement!: ElementRef<HTMLElement>;
   @ViewChild('wrapper') wrapperElement!: ElementRef<HTMLElement>;
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;

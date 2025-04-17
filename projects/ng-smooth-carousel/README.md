@@ -15,6 +15,7 @@ A smooth, customizable carousel component for Angular, supporting both vertical 
 - 🔄 Auto-play support ✅
 - 🔄 Full-width single item support ✅
 - 🔄 Tab-friendly with visibility detection ✅
+- 🎨 Custom empty state templates ✅
 
 ## Coming Soon
 
@@ -27,13 +28,13 @@ A smooth, customizable carousel component for Angular, supporting both vertical 
 **For Angular 14:**
 
 ```typescript
-npm install ng-smooth-carousel@14.0.5
+npm install ng-smooth-carousel@14.0.6
 ```
 
 Or with yarn:
 
 ```typescript
-yarn add ng-smooth-carousel@14.0.5
+yarn add ng-smooth-carousel@14.0.6
 ```
 
 ## Usage
@@ -160,6 +161,32 @@ carouselConfig: CarouselConfig = {
   },
 };
 ```
+
+### Example with Custom Empty State Template
+
+```html
+<nsc [items]="products" [config]="carouselConfig">
+  <!-- Regular item template -->
+  <ng-template #carouselItem let-item>
+    <div class="custom-item">
+      <h3>{{ item.title }}</h3>
+      <p>{{ item.description }}</p>
+      <button>View Details</button>
+    </div>
+  </ng-template>
+
+  <!-- Custom empty state template -->
+  <ng-template #emptyState>
+    <div class="custom-empty-state">
+      <h3>No Products Available</h3>
+      <p>Please check back later or try a different search.</p>
+      <button>Browse All Categories</button>
+    </div>
+  </ng-template>
+</nsc>
+```
+
+The carousel component will use your custom empty state template when there are no items to display, such as when filtering returns no results or when the provided items array is empty.
 
 ## Configuration Options
 

@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [14.0.5] - 2025-04-17
+
+### Added
+- Custom empty state template support via `<ng-template #emptyState>` to display custom content when no items are found
+- Updated documentation with examples for using custom empty state templates
+
+### Fixed
+- Fixed linting errors in template handling
+- Improved null handling with optional chaining for filtered items
+
 ## [14.0.3] - 2025-04-16
 
 ### Fixed

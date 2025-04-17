@@ -27,13 +27,13 @@ A smooth, customizable carousel component for Angular, supporting both vertical 
 **For Angular 14:**
 
 ```typescript
-npm install ng-smooth-carousel@14.0.5
+npm install ng-smooth-carousel@14.0.6
 ```
 
 Or with yarn:
 
 ```typescript
-yarn add ng-smooth-carousel@14.0.5
+yarn add ng-smooth-carousel@14.0.6
 ```
 
 ## Usage
