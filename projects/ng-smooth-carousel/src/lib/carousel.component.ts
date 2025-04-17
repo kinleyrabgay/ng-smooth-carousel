@@ -67,7 +67,7 @@ import { CarouselConfig } from './carousel-config.interface';
         </div>
       </div>
 
-      <div *ngIf="showNavigation" class="nsc__nav-controls">
+      <div *ngIf="showNavigation && hasItems()" class="nsc__nav-controls">
         <div *ngIf="showSearch" class="nsc__search">
           <button [ngStyle]="searchButtonStyles" (click)="toggleSearchModal()" class="nsc__nav-button nsc__nav-button--search">
             <span class="nsc__nav-icon" [ngStyle]="searchIconStyles">{{ searchIcon }}</span>
@@ -721,6 +721,6 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
   }
 
   hasItems(): boolean {
-    return this.filteredItems.length > 0;
+    return this.filteredItems?.length > 0;
   }
 }
