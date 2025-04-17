@@ -11,6 +11,8 @@ import {
   HostListener,
   OnInit,
   NgZone,
+  OnChanges,
+  SimpleChanges
 } from '@angular/core';
 import { Subject, fromEvent } from 'rxjs';
 import { takeUntil, debounceTime } from 'rxjs/operators';
@@ -31,7 +33,7 @@ import { CarouselConfig } from './carousel-config.interface';
           [style.--animation-duration]="animationDuration"
           [style.--animation-timing]="animationTiming"
           class="nsc__track">
-          <ng-container *ngIf="filteredItems?.length; else emptyState">
+          <ng-container *ngIf="hasItems(); else emptyState">
             <ng-container *ngFor="let item of filteredItems; let i = index">
               <div class="nsc__item" [ngStyle]="getItemStyle(i)">
                 <ng-container *ngIf="itemTemplate; else defaultTemplate">
@@ -132,7 +134,7 @@ import { CarouselConfig } from './carousel-config.interface';
     `,
   ],
 })
-export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   @Input() items: any[] = [];
   @Input() config: CarouselConfig = {};
 
@@ -167,13 +169,26 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   isSearchModalOpen = false;
   filteredItems: any[] = [];
 
-  constructor(
-    private cdr: ChangeDetectorRef,
-    private ngZone: NgZone
-  ) {}
+  constructor(private readonly cdr: ChangeDetectorRef, private readonly ngZone: NgZone) {}
 
   ngOnInit(): void {
-    this.filteredItems = this.items;
+    this.filteredItems = this.items || [];
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['items']) {
+      this.filteredItems = this.items || [];
+      
+      // If the component is already initialized, update carousel
+      if (this.initialized) {
+        setTimeout(() => {
+          this.updateContainerWidth();
+          this.calculateItemWidths();
+          this.checkOverflow();
+          this.cdr.detectChanges();
+        });
+      }
+    }
   }
 
   private parseTimeToMs(time: string): number {
@@ -703,5 +718,9 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
       boxSizing: 'border-box',
       borderRadius: 'inherit'
     };
+  }
+
+  hasItems(): boolean {
+    return this.filteredItems.length > 0;
   }
 }
