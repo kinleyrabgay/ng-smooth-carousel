@@ -343,8 +343,8 @@ interface SearchStyle {
 | Angular 17+     | Coming soon     |
 
 ## Demo
-![Single Item]('https://github.com/kinleyrabgay/ng-smooth-carousel/blob/v14/assets/one-scroll.png)
-![Multiple Items]('https://github.com/kinleyrabgay/ng-smooth-carousel/blob/v14/assets/multiple-2.png)
+![Single Item]('https://github.com/kinleyrabgay/ng-smooth-carousel/v14/assets/one-scroll.png)
+![Multiple Items]('https://github.com/kinleyrabgay/ng-smooth-carousel/v14/assets/multiple-2.png)
 
 ## Browser Support
 
