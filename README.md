@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/7c78f4d1-fcdf-4ed4-8ad8-2c091241d875)# ng-smooth-carousel
+# ng-smooth-carousel
 
 A smooth, customizable carousel component for Angular 14+ applications, supporting both vertical and horizontal orientations.
 
