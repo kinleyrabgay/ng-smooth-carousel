@@ -2,6 +2,8 @@
 
 ![Angular 14 Compatible](https://img.shields.io/badge/Angular-14-brightgreen)
 
+![Carousel Example](https://raw.githubusercontent.com/kinleyrabgay/ng-smooth-carousel/main/carousel-example.jpg)
+
 A smooth, customizable carousel component for Angular, supporting both vertical and horizontal orientations.
 
 ## Features
@@ -225,11 +227,34 @@ To create a carousel that displays and scrolls through one full-width item at a 
 ```typescript
 carouselConfig: CarouselConfig = {
   containerWidth: '100%',
-  containerHeight: '300px',
+  containerHeight: '350px',
   itemWidth: '100%',
   itemHeight: '100%',
   enableOneItemScroll: true,
-};
+  navigationStyle: {
+    buttonShape: 'rounded',
+    nextButton: {
+      backgroundColor: '#fff',
+      color: '#333',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
+      top: '75%',
+      right: '-2px',
+      width: '40px',
+      height: '60px',
+      transform: 'translateY(-50%)'
+    },
+    prevButton: {
+      backgroundColor: '#fff',
+      color: '#333',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
+      top: '75%',
+      left: '-2px',
+      width: '40px',
+      height: '60px',
+      transform: 'translateY(-50%)'
+    }
+  }
+}
 ```
 
 This configuration creates a clean, full-width carousel where each item takes up the entire container width and scrolls individually.
