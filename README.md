@@ -206,6 +206,13 @@ interface ButtonStyle {
   [key: string]: string | undefined;
 }
 ```
+## Demo
+
+### Horizontal
+![Single Item](https://github.com/user-attachments/assets/ada0fea8-ae30-4e30-912d-f31aaf08de37)
+![Multiple Items](https://github.com/user-attachments/assets/2cacfc06-8e1f-4f63-8965-7906dca17460)
+
+### Vertical
 
 ## Browser Support
 
