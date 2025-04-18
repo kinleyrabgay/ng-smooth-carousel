@@ -141,7 +141,6 @@ export class YourComponent {
         transform: 'translateY(-50%)'
       }
     }
-    orientation: 'vertical'
   }
 }
 ```
@@ -342,6 +341,10 @@ interface SearchStyle {
 |-----------------|-----------------|
 | Angular 14      | 14.1.0          |
 | Angular 17+     | Coming soon     |
+
+## Demo
+![Single Item]('https://github.com/kinleyrabgay/ng-smooth-carousel/blob/v14/assets/one-scroll.png)
+![Multiple Items]('https://github.com/kinleyrabgay/ng-smooth-carousel/blob/v14/assets/multiple-2.png)
 
 ## Browser Support
 
