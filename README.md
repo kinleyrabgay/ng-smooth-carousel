@@ -14,8 +14,8 @@ A smooth, customizable carousel component for Angular, supporting both vertical 
 - 🎯 Custom item templates ✅
 - 🔄 Auto-play support ✅
 - 🔄 Full-width single item support ✅
-- 🔄 Tab-friendly with visibility detection ✅
 - 🎨 Custom empty state templates ✅
+- 🎯 Customizable navigation button positions ✅
 
 ## Coming Soon
 
@@ -28,13 +28,13 @@ A smooth, customizable carousel component for Angular, supporting both vertical 
 **For Angular 14:**
 
 ```typescript
-npm install ng-smooth-carousel@14.0.9
+npm install ng-smooth-carousel@14.1.0
 ```
 
 Or with yarn:
 
 ```typescript
-yarn add ng-smooth-carousel@14.0.9
+yarn add ng-smooth-carousel@14.1.0
 ```
 
 ## Usage
@@ -106,45 +106,43 @@ export class YourComponent {
     // ...
   ];
 
-  carouselConfig: CarouselConfig = {
-    // Layout Configuration
+  carouselConfigs: CarouselConfig = {
     containerWidth: '100%',
-    containerHeight: 'auto',
-    itemWidth: '200px',
-    itemHeight: '200px',
-    itemGap: '16px',
-    orientation: 'horizontal', // or 'vertical'
-    
-    // Navigation Configuration
-    showNavigation: true,     // defaults to true
-    navigationSize: '60px',
-    navigationPadding: '4px',
-    
-    // Animation & Scroll
-    animationDuration: '300ms',
-    scrollSize: 'md',         // 'xs' to '10xl'
-    
-    // Features
-    enableSearch: false,
-    loop: false,
-    autoplay: false,
-    autoplayDelay: '3000ms',
-    
-    // Navigation Styling
+    containerHeight: '350px',
+    itemWidth: '465px',
+    itemHeight: '100%',
+    itemGap: '24px',
+    scrollSize: '10xl',
     navigationStyle: {
-      buttonShape: 'rounded', // 'circle' | 'rounded' | 'square'
+      buttonShape: 'circle',
       nextButton: {
         backgroundColor: '#fff',
         color: '#333',
-        border: '1px solid #ddd'
+        boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
+        border: '1px solid #333',
+        zIndex: '9999',
+        position: 'absolute',
+        top: '75%',
+        right: '10px',
+        width: '40px',
+        height: '40px',
+        transform: 'translateY(-50%)'
       },
       prevButton: {
         backgroundColor: '#fff',
         color: '#333',
-        border: '1px solid #ddd'
+        boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
+        zIndex: '9999',
+        position: 'absolute',
+        top: '75%',
+        left: '10px',
+        width: '40px',
+        height: '40px',
+        transform: 'translateY(-50%)'
       }
     }
-  };
+    orientation: 'vertical'
+  }
 }
 ```
 
@@ -206,6 +204,7 @@ The carousel component will use your custom empty state template when there are 
 | `contentPadding` | string | '10px' | Padding for the content area |
 | `navigationSize` | string | '60px' | Size of navigation areas |
 | `navigationPadding` | string | '10px' | Padding for navigation areas |
+| `ctaPosition` | string | 'bottom-right' | Position of navigation controls |
 
 ### Advanced Features
 
@@ -269,9 +268,9 @@ type NavButtonShape = 'circle' | 'rounded' | 'square';
 
 ```typescript
 interface NavigationStyle {
+  nextButton?: Record<string, string> | ButtonStyle;
+  prevButton?: Record<string, string> | ButtonStyle;
   buttonShape?: NavButtonShape;
-  nextButton?: Record<string, string>;
-  prevButton?: Record<string, string>;
   icons?: {
     next?: string;
     prev?: string;
@@ -295,7 +294,14 @@ interface ButtonStyle {
   fontSize?: string;
   border?: string;
   boxShadow?: string;
-}
+  top?: string;
+  bottom?: string;
+  left?: string;
+  right?: string;
+  zIndex?: string;
+  transform?: string;
+  position?: string;
+} 
 ```
 
 ### SearchStyle Interface
@@ -311,7 +317,7 @@ interface SearchStyle {
 
 | Angular Version | Package Version |
 |-----------------|-----------------|
-| Angular 14      | 14.0.4          |
+| Angular 14      | 14.1.0          |
 | Angular 17+     | Coming soon     |
 
 ## Browser Support

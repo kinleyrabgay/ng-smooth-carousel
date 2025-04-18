@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [14.1.0] - 2025-04-20
+
+### Added
+- Added individual position styling for prev and next buttons
+- Each button can now have its own position properties (top, bottom, left, right, position, transform, zIndex)
+- Position properties can be specified directly in the nextButton and prevButton objects
+
+## [14.0.9] - 2025-04-18
+
+### Added
+- Hide navigation buttons when empty state is displayed
+
+## [14.0.6] - 2025-04-18
+
+### Fixed
+- Improved empty state styling to ensure it takes full width of the carousel container
+- Fixed custom empty state template display for better customization
+- Improved documentation for empty state template usage
+- Added warning about not wrapping the carousel component in `*ngIf` conditions when using empty state templates
+- Enhanced examples to demonstrate proper usage of empty state templates
+
 ## [14.0.5] - 2025-04-17
 
 ### Added
