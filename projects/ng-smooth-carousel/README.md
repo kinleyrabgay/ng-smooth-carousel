@@ -2,8 +2,6 @@
 
 ![Angular 14 Compatible](https://img.shields.io/badge/Angular-14-brightgreen)
 
-![Carousel Example](https://raw.githubusercontent.com/kinleyrabgay/ng-smooth-carousel/main/carousel-example.jpg)
-
 A smooth, customizable carousel component for Angular, supporting both vertical and horizontal orientations.
 
 ## Features
