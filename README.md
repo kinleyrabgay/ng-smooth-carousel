@@ -212,9 +212,9 @@ The carousel component will use your custom empty state template when there are 
 | `autoplay` | boolean | false | Enable autoplay ✅ |
 | `autoplayDelay` | string | '3000ms' | Delay between autoplay slides ✅ |
 | `loop` | boolean | false | Enable infinite loop ❌ |
-| `enableSearch` | boolean | false | Enable search functionality ✅ |
-| `searchPlaceholder` | string | 'Search...' | Placeholder text for search input ✅ |
-| `searchModalTitle` | string | 'Search Items' | Title for search modal ✅ |
+| `enableSearch` | boolean | false | Enable search functionality  |
+| `searchPlaceholder` | string | 'Search...' | Placeholder text for search input ❌ |
+| `searchModalTitle` | string | 'Search Items' | Title for search modal ❌ |
 | `enableOneItemScroll` | boolean | false | Enable scrolling one item at a time ✅ |
 
 ### Full-Width Single Item Carousel
