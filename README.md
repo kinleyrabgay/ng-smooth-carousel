@@ -13,6 +13,9 @@ A smooth, customizable carousel component for Angular, supporting both vertical 
 - 🎮 Multiple navigation options ✅
 - 🎯 Custom item templates ✅
 - 🔄 Auto-play support ✅
+- 🔄 Full-width single item support ✅
+- 🎨 Custom empty state templates ✅
+- 🎯 Customizable navigation button positions ✅
 
 ## Coming Soon
 
@@ -25,13 +28,13 @@ A smooth, customizable carousel component for Angular, supporting both vertical 
 **For Angular 14:**
 
 ```typescript
-npm install ng-smooth-carousel@14.0.0
+npm install ng-smooth-carousel@14.1.2
 ```
 
 Or with yarn:
 
 ```typescript
-yarn add ng-smooth-carousel@14.0.0
+yarn add ng-smooth-carousel@14.1.2
 ```
 
 ## Usage
@@ -103,45 +106,42 @@ export class YourComponent {
     // ...
   ];
 
-  carouselConfig: CarouselConfig = {
-    // Layout Configuration
+  carouselConfigs: CarouselConfig = {
     containerWidth: '100%',
-    containerHeight: 'auto',
-    itemWidth: '200px',
-    itemHeight: '200px',
-    itemGap: '16px',
-    orientation: 'horizontal', // or 'vertical'
-    
-    // Navigation Configuration
-    showNavigation: true,     // defaults to true
-    navigationSize: '60px',
-    navigationPadding: '4px',
-    
-    // Animation & Scroll
-    animationDuration: '300ms',
-    scrollSize: 'md',         // 'xs' to '10xl'
-    
-    // Features
-    enableSearch: false,
-    loop: false,
-    autoplay: false,
-    autoplayDelay: '3000ms',
-    
-    // Navigation Styling
+    containerHeight: '350px',
+    itemWidth: '465px',
+    itemHeight: '100%',
+    itemGap: '24px',
+    scrollSize: '10xl',
     navigationStyle: {
-      buttonShape: 'rounded', // 'circle' | 'rounded' | 'square'
+      buttonShape: 'circle',
       nextButton: {
         backgroundColor: '#fff',
         color: '#333',
-        border: '1px solid #ddd'
+        boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
+        border: '1px solid #333',
+        zIndex: '9999',
+        position: 'absolute',
+        top: '75%',
+        right: '10px',
+        width: '40px',
+        height: '40px',
+        transform: 'translateY(-50%)'
       },
       prevButton: {
         backgroundColor: '#fff',
         color: '#333',
-        border: '1px solid #ddd'
+        boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
+        zIndex: '9999',
+        position: 'absolute',
+        top: '75%',
+        left: '10px',
+        width: '40px',
+        height: '40px',
+        transform: 'translateY(-50%)'
       }
     }
-  };
+  }
 }
 ```
 
@@ -158,6 +158,32 @@ carouselConfig: CarouselConfig = {
   },
 };
 ```
+
+### Example with Custom Empty State Template
+
+```html
+<nsc [items]="products" [config]="carouselConfig">
+  <!-- Regular item template -->
+  <ng-template #carouselItem let-item>
+    <div class="custom-item">
+      <h3>{{ item.title }}</h3>
+      <p>{{ item.description }}</p>
+      <button>View Details</button>
+    </div>
+  </ng-template>
+
+  <!-- Custom empty state template -->
+  <ng-template #emptyState>
+    <div class="custom-empty-state">
+      <h3>No Products Available</h3>
+      <p>Please check back later or try a different search.</p>
+      <button>Browse All Categories</button>
+    </div>
+  </ng-template>
+</nsc>
+```
+
+The carousel component will use your custom empty state template when there are no items to display, such as when filtering returns no results or when the provided items array is empty.
 
 ## Configuration Options
 
@@ -177,6 +203,7 @@ carouselConfig: CarouselConfig = {
 | `contentPadding` | string | '10px' | Padding for the content area |
 | `navigationSize` | string | '60px' | Size of navigation areas |
 | `navigationPadding` | string | '10px' | Padding for navigation areas |
+| `ctaPosition` | string | 'bottom-right' | Position of navigation controls |
 
 ### Advanced Features
 
@@ -185,9 +212,9 @@ carouselConfig: CarouselConfig = {
 | `autoplay` | boolean | false | Enable autoplay ✅ |
 | `autoplayDelay` | string | '3000ms' | Delay between autoplay slides ✅ |
 | `loop` | boolean | false | Enable infinite loop ❌ |
-| `enableSearch` | boolean | false | Enable search functionality ✅ |
-| `searchPlaceholder` | string | 'Search...' | Placeholder text for search input ✅ |
-| `searchModalTitle` | string | 'Search Items' | Title for search modal ✅ |
+| `enableSearch` | boolean | false | Enable search functionality  |
+| `searchPlaceholder` | string | 'Search...' | Placeholder text for search input ❌ |
+| `searchModalTitle` | string | 'Search Items' | Title for search modal ❌ |
 | `enableOneItemScroll` | boolean | false | Enable scrolling one item at a time ✅ |
 
 ### Full-Width Single Item Carousel
@@ -197,11 +224,34 @@ To create a carousel that displays and scrolls through one full-width item at a 
 ```typescript
 carouselConfig: CarouselConfig = {
   containerWidth: '100%',
-  containerHeight: '300px',
+  containerHeight: '350px',
   itemWidth: '100%',
   itemHeight: '100%',
   enableOneItemScroll: true,
-};
+  navigationStyle: {
+    buttonShape: 'rounded',
+    nextButton: {
+      backgroundColor: '#fff',
+      color: '#333',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
+      top: '75%',
+      right: '-2px',
+      width: '40px',
+      height: '60px',
+      transform: 'translateY(-50%)'
+    },
+    prevButton: {
+      backgroundColor: '#fff',
+      color: '#333',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
+      top: '75%',
+      left: '-2px',
+      width: '40px',
+      height: '60px',
+      transform: 'translateY(-50%)'
+    }
+  }
+}
 ```
 
 This configuration creates a clean, full-width carousel where each item takes up the entire container width and scrolls individually.
@@ -240,9 +290,9 @@ type NavButtonShape = 'circle' | 'rounded' | 'square';
 
 ```typescript
 interface NavigationStyle {
+  nextButton?: Record<string, string> | ButtonStyle;
+  prevButton?: Record<string, string> | ButtonStyle;
   buttonShape?: NavButtonShape;
-  nextButton?: Record<string, string>;
-  prevButton?: Record<string, string>;
   icons?: {
     next?: string;
     prev?: string;
@@ -266,7 +316,14 @@ interface ButtonStyle {
   fontSize?: string;
   border?: string;
   boxShadow?: string;
-}
+  top?: string;
+  bottom?: string;
+  left?: string;
+  right?: string;
+  zIndex?: string;
+  transform?: string;
+  position?: string;
+} 
 ```
 
 ### SearchStyle Interface
@@ -282,8 +339,18 @@ interface SearchStyle {
 
 | Angular Version | Package Version |
 |-----------------|-----------------|
-| Angular 14      | 14.0.0          |
+| Angular 14      | 14.1.0          |
 | Angular 17+     | Coming soon     |
+
+## Demo
+
+### Horizontal
+![Single Item](https://github.com/user-attachments/assets/ada0fea8-ae30-4e30-912d-f31aaf08de37)
+![Multiple Items](https://github.com/user-attachments/assets/2cacfc06-8e1f-4f63-8965-7906dca17460)
+
+### Vertical
+![Single Item](https://github.com/user-attachments/assets/fd0a2174-2b83-4fa8-b5d8-94ee0f70c204)
+![Multiple Items](https://github.com/user-attachments/assets/7094e49a-ad8d-4ee8-81f4-a846cdff9af7)
 
 ## Browser Support
 
