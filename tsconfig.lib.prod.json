@@ -4,6 +4,7 @@
     "declarationMap": false
   },
   "angularCompilerOptions": {
-    "enableResourceInlining": true
+    "enableResourceInlining": true,
+    "compilationMode": "partial"
   }
-}
+} 

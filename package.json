@@ -1,59 +1,70 @@
 {
-  "name": "ng-smooth-carousel",
-  "version": "1.1.0",
-  "description": "A smooth, customizable carousel component for Angular applications",
-  "author": "Kinley Rabgay",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kinleyrabgay/ng-smooth-carousel"
+  "name": "@ngfly/carousel",
+  "version": "0.0.1",
+  "description": "A smooth, customizable carousel component for Angular 17+ applications",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng build --watch",
+    "build": "ng build",
+    "build:prod": "npm run clean && ng build --configuration production",
+    "optimize": "bash ./optimize.sh",
+    "prepare:package": "cp README.md CHANGELOG.md LICENSE dist/@ngfly/carousel/",
+    "clean:package": "node scripts/clean-package.js",
+    "publish:lib": "npm run build:prod && npm run optimize && cd dist/@ngfly/carousel && npm publish --access public",
+    "clean": "rimraf dist",
+    "lint": "ng lint"
+  },
+  "dependencies": {
+    "tslib": "^2.6.2"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^17.0.0",
+    "@angular/animations": "^17.0.0",
+    "@angular/cli": "^17.0.0",
+    "@angular/common": "^17.0.0",
+    "@angular/compiler": "^17.0.0",
+    "@angular/compiler-cli": "^17.0.0",
+    "@angular/core": "^17.0.0",
+    "@angular/forms": "^17.0.0",
+    "@angular/platform-browser": "^17.0.0",
+    "@angular/platform-browser-dynamic": "^17.0.0",
+    "@types/node": "^20.10.0",
+    "ng-packagr": "^17.0.0",
+    "rxjs": "~7.8.1",
+    "terser": "^5.39.0",
+    "typescript": "~5.2.2",
+    "zone.js": "~0.14.2"
+  },
+  "peerDependencies": {
+    "@angular/animations": "^17.0.0",
+    "@angular/common": "^17.0.0",
+    "@angular/core": "^17.0.0",
+    "@angular/forms": "^17.0.0",
+    "rxjs": "~7.8.1",
+    "zone.js": "~0.14.2"
   },
   "keywords": [
     "angular",
     "carousel",
     "slider",
-    "component",
-    "typescript",
-    "smooth",
-    "responsive"
+    "swiper",
+    "ng-carousel",
+    "angular-carousel",
+    "responsive",
+    "typescript"
   ],
-  "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "build:lib": "cd projects/ng-smooth-carousel && ng-packagr -p ng-package.json",
-    "build:demo": "ng build angular14-demo --configuration production",
-    "demo": "ng serve angular14-demo --open",
-    "watch": "ng build --watch --configuration development",
-    "lint": "ng lint",
-    "prepare:package": "cp README.md CHANGELOG.md LICENSE dist/ng-smooth-carousel/",
-    "publish:lib": "npm run build:lib && npm run prepare:package && cd dist/ng-smooth-carousel && npm publish"
+  "author": "Kinley Rabgay",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kinleyrabgay/nsc.git"
   },
-  "private": false,
-  "dependencies": {
-    "@angular/animations": "^14.0.0",
-    "@angular/common": "^14.0.0",
-    "@angular/compiler": "^14.0.0",
-    "@angular/core": "^14.0.0",
-    "@angular/forms": "^14.0.0",
-    "@angular/platform-browser": "^14.0.0",
-    "@angular/platform-browser-dynamic": "^14.0.0",
-    "@angular/router": "^14.0.0",
-    "rxjs": "~7.5.0",
-    "tslib": "^2.3.0",
-    "zone.js": "~0.11.4"
+  "bugs": {
+    "url": "https://github.com/kinleyrabgay/nsc/issues"
   },
-  "devDependencies": {
-    "@angular-devkit/build-angular": "^14.0.0",
-    "@angular/cli": "^14.0.0",
-    "@angular/compiler-cli": "^14.0.0",
-    "@types/node": "^16.18.126",
-    "ng-packagr": "^14.0.0",
-    "terser": "^5.39.0",
-    "typescript": "~4.7.2"
-  },
-  "peerDependencies": {
-    "@angular/common": "^14.0.0",
-    "@angular/core": "^14.0.0"
-  }
+  "homepage": "https://github.com/kinleyrabgay/nsc#readme",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false
 }

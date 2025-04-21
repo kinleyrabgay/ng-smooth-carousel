@@ -1,44 +1,32 @@
 #!/bin/bash
 
-# Colors for output
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+# Set the npm registry URL
+NPM_REGISTRY_URL="https://registry.npmjs.org/"
 
-echo -e "${YELLOW}Building ng-smooth-carousel library...${NC}"
-npm run build:lib
+# Set the version
+VERSION=$(node -p "require('./package.json').version")
+PACKAGE_NAME=$(node -p "require('./package.json').name")
+DIST_DIR="dist/@ngfly/carousel"
 
-if [ $? -ne 0 ]; then
-  echo -e "${RED}Build failed!${NC}"
-  exit 1
-fi
+# Build the library for production
+echo "Building library for production..."
+npm run build:prod
 
-echo -e "${YELLOW}Copying README, CHANGELOG and LICENSE to dist folder...${NC}"
+# Copy README and LICENSE to dist folder
+echo "Copying documents to dist folder..."
 npm run prepare:package
 
-if [ $? -ne 0 ]; then
-  echo -e "${RED}Failed to copy files!${NC}"
-  exit 1
-fi
+# Navigate to dist folder to publish
+echo "Publishing version $VERSION of $PACKAGE_NAME to npm..."
+cd $DIST_DIR
 
-echo -e "${YELLOW}Package ready for publishing. Proceeding to publish...${NC}"
-echo -e "${YELLOW}Publishing to NPM...${NC}"
-cd dist/ng-smooth-carousel
+# Make sure you're logged in to npm
+echo "Make sure you're logged in to npm. If not, run 'npm login'"
 
-# Ask for confirmation before publishing
-read -p "Do you want to publish ng-smooth-carousel v1.1.0 to npm? (y/n) " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  npm publish
-  if [ $? -eq 0 ]; then
-    echo -e "${GREEN}Successfully published!${NC}"
-  else
-    echo -e "${RED}Failed to publish!${NC}"
-    exit 1
-  fi
-else
-  echo -e "${YELLOW}Publishing canceled.${NC}"
-fi
+# Publish to npm
+npm publish --access public
 
+echo "Published $PACKAGE_NAME@$VERSION successfully!"
 cd ../..
-echo -e "${GREEN}Done!${NC}" 
+
+echo "Done!" 

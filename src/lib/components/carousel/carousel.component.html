@@ -1,0 +1,88 @@
+<div class="carousel" 
+  [class.carousel--vertical]="isVertical" 
+  [ngClass]="configs.containerClass" 
+  [ngStyle]="containerStyles"
+  [style.height]="configs.containerHeight || 'auto'"
+  [style.width]="configs.containerWidth || 'auto'">
+  <div
+    #wrapper
+    [style.--content-padding]="contentPadding"
+    class="carousel__wrapper">
+    <div
+      #track
+      [ngStyle]="trackStyles"
+      [class.carousel__track--vertical]="isVertical"
+      [style.--animation-duration]="animationDuration"
+      [style.--animation-timing]="animationTiming"
+      class="carousel__track">
+      <ng-container *ngIf="hasItems(); else emptyState">
+        <ng-container *ngFor="let slide of filteredItems; let i = index">
+          <div class="carousel__item" 
+            [ngClass]="configs.itemClass" 
+            [ngStyle]="getItemStyle(i)" 
+            [style.--item-width]="configs.itemWidth || 'auto'"
+            [style.--item-height]="configs.itemHeight || 'auto'">
+            <ng-container *ngIf="itemTemplate; else defaultTemplate">
+              <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: slide, index: i }"></ng-container>
+            </ng-container>
+            <ng-template #defaultTemplate>
+              <div class="carousel__item-default">
+                {{ slide }}
+              </div>
+            </ng-template>
+          </div>
+        </ng-container>
+      </ng-container>
+      
+      <ng-template #emptyState>
+        <div class="carousel__empty-container" [ngStyle]="getEmptyStateContainerStyle()">
+          <ng-container *ngIf="emptyStateTemplate; else defaultEmptyState">
+            <ng-container *ngTemplateOutlet="emptyStateTemplate; context: { $implicit: emptyStateText }"></ng-container>
+          </ng-container>
+          <ng-template #defaultEmptyState>
+            <div class="carousel__empty-state" [style.color]="emptyStateTextColor">
+              <div *ngIf="showEmptyStateIcon" class="carousel__empty-icon">{{emptyStateIcon}}</div>
+              <div class="carousel__empty-text">{{emptyStateText}}</div>
+            </div>
+          </ng-template>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <div *ngIf="showNavigation && hasItems()" [ngClass]="getNavControlsClass()" [ngStyle]="getNavControlsStyle()">    
+    <button 
+      [class.carousel__nav-button--disabled]="!showPrevButton" 
+      [disabled]="!showPrevButton" 
+      [ngStyle]="getPrevButtonFullStyles()" 
+      (click)="previous()" 
+      style="pointer-events:auto;"
+      class="carousel__nav-button">
+      <span class="carousel__nav-icon" [ngStyle]="getIconStyles(false)">{{ prevIcon }}</span>
+    </button>
+    
+    <button
+      [class.carousel__nav-button--disabled]="!showNextButton"
+      [disabled]="!showNextButton"
+      [ngStyle]="getNextButtonFullStyles()"
+      (click)="next()"
+      style="pointer-events:auto;"
+      class="carousel__nav-button">
+      <span class="carousel__nav-icon" [ngStyle]="getIconStyles(true)">{{ nextIcon }}</span>
+    </button>
+  </div>
+
+  <!-- Carousel indicators -->
+  <div
+    *ngIf="showIndicators && hasItems() && filteredItems.length > 1" 
+    class="carousel__indicators" 
+    [ngStyle]="getIndicatorContainerStyles()">
+    <div
+      *ngFor="let slide of filteredItems; let i = index"
+      class="carousel__indicator"
+      [class.carousel__indicator--active]="i === currentIndex"
+      [ngStyle]="getIndicatorItemStyles(i)"
+      (click)="goToSlide(i)">
+    </div>
+  </div>
+</div>

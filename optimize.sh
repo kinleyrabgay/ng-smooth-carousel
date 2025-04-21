@@ -1,45 +1,51 @@
 #!/bin/bash
 
-# Colors for output
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-NC='\033[0m' # No Color
+# Set package info
+PACKAGE_NAME=$(node -p "require('./package.json').name")
+DIST_DIR="dist/@ngfly/carousel"
 
-echo -e "${YELLOW}Building optimized library...${NC}"
-
-# Clean previous builds
-echo -e "${YELLOW}Cleaning dist folder...${NC}"
-rm -rf dist
-
-# Build with production settings
-echo -e "${YELLOW}Building with production configuration...${NC}"
-npm run build:lib
-
-if [ $? -ne 0 ]; then
-  echo -e "${RED}Build failed!${NC}"
-  exit 1
-fi
-
-echo -e "${YELLOW}Copying README, CHANGELOG and LICENSE to dist folder...${NC}"
+# Copy README, CHANGELOG and LICENSE
+echo "Copying README, CHANGELOG and LICENSE..."
 npm run prepare:package
 
-# Further optimize with terser - more aggressive settings
-echo -e "${YELLOW}Minifying JavaScript with terser...${NC}"
-find dist/ng-smooth-carousel/fesm2020 -name "*.js" -o -name "*.mjs" -exec npx terser {} -o {} -c passes=3,pure_getters=true,unsafe=true -m --ecma 2020 --comments false \;
-find dist/ng-smooth-carousel/fesm2015 -name "*.js" -o -name "*.mjs" -exec npx terser {} -o {} -c passes=3,pure_getters=true,unsafe=true -m --ecma 2015 --comments false \;
-find dist/ng-smooth-carousel/esm2020 -name "*.js" -o -name "*.mjs" -exec npx terser {} -o {} -c passes=3,pure_getters=true,unsafe=true -m --ecma 2020 --comments false \;
+# Optimize ESM bundles with terser
+echo "Optimizing ESM bundles with terser..."
+npx terser --compress --mangle --ecma 2020 --module --comments false \
+  -o "$DIST_DIR/esm2020/ngxfly-carousel.mjs" \
+  "$DIST_DIR/esm2020/ngxfly-carousel.mjs"
 
-# Optionally remove source maps to further reduce size
-echo -e "${YELLOW}Removing source maps to reduce size...${NC}"
-find dist/ng-smooth-carousel -name "*.map" -delete
+npx terser --compress --mangle --ecma 2020 --module --comments false \
+  -o "$DIST_DIR/fesm2020/ngxfly-carousel.mjs" \
+  "$DIST_DIR/fesm2020/ngxfly-carousel.mjs"
 
-echo -e "${GREEN}Library optimized successfully!${NC}"
+npx terser --compress --mangle --ecma 2020 --module --comments false \
+  -o "$DIST_DIR/fesm2015/ngxfly-carousel.mjs" \
+  "$DIST_DIR/fesm2015/ngxfly-carousel.mjs"
 
-# Show directory sizes
-echo -e "${YELLOW}Package size:${NC}"
-du -sh dist/ng-smooth-carousel
-echo -e "${YELLOW}File sizes:${NC}"
-du -h dist/ng-smooth-carousel/* | sort -h
+# Component files which might be large
+npx terser --compress --mangle --ecma 2020 --module --comments false \
+  -o "$DIST_DIR/esm2020/lib/components/carousel/carousel.component.mjs" \
+  "$DIST_DIR/esm2020/lib/components/carousel/carousel.component.mjs"
 
-echo -e "${GREEN}Package is ready in dist/ng-smooth-carousel${NC}" 
+# Animation utils
+npx terser --compress --mangle --ecma 2020 --module --comments false \
+  -o "$DIST_DIR/esm2020/lib/utils/animation.mjs" \
+  "$DIST_DIR/esm2020/lib/utils/animation.mjs"
+
+# Remove source maps to reduce size
+echo "Removing source maps..."
+find "$DIST_DIR" -name "*.map" -type f -delete
+
+# Remove test files
+echo "Removing test files..."
+find "$DIST_DIR" -name "*.spec.*" -type f -delete
+
+# Clean package.json
+echo "Cleaning package.json..."
+npm run clean:package
+
+# File sizes
+echo "Final package size:"
+du -sh "$DIST_DIR"
+
+echo "Done! Package is optimized for production." 

@@ -1,6 +1,6 @@
-# Contributing to ng-smooth-carousel
+# Contributing to nsc
 
-Thank you for your interest in contributing to ng-smooth-carousel! This document provides guidelines and instructions for contributing to this project.
+Thank you for your interest in contributing to nsc! This document provides guidelines and instructions for contributing to this project.
 
 ## Table of Contents
 
@@ -40,8 +40,8 @@ This project and everyone participating in it is governed by our Code of Conduct
 
 1. Clone your forked repository:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/ng-smooth-carousel.git
-   cd ng-smooth-carousel
+   git clone https://github.com/YOUR_USERNAME/nsc.git
+   cd nsc
    ```
 
 2. Install dependencies:
@@ -53,7 +53,7 @@ This project and everyone participating in it is governed by our Code of Conduct
 
 3. Build the library:
    ```bash
-   ng build ng-smooth-carousel
+   ng build nsc
    ```
 
 4. Run the demo application:
@@ -122,7 +122,7 @@ When reporting issues, please include:
 7. Environment information:
    - Browser and version
    - Angular version
-   - ng-smooth-carousel version
+   - nsc version
 
 ## Feature Requests
 
@@ -135,8 +135,8 @@ For feature requests, please provide:
 
 ## License
 
-By contributing to ng-smooth-carousel, you agree that your contributions will be licensed under the project's MIT License.
+By contributing to nsc, you agree that your contributions will be licensed under the project's MIT License.
 
 ---
 
-Thank you for contributing to ng-smooth-carousel! Your efforts help make this project better for everyone. 
+Thank you for contributing to nsc! Your efforts help make this project better for everyone. 

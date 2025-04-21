@@ -1,0 +1,105 @@
+# IDE files
+.idea/
+.vscode/
+.editorconfig
+
+# Build files
+*.tgz
+*.tar.gz
+*.zip
+.DS_Store
+Thumbs.db
+
+# Test files
+*.spec.ts
+*.test.ts
+test/
+tests/
+testing/
+tsconfig.spec.json
+karma.conf.js
+test.ts
+
+# Source maps
+*.map
+*.js.map
+
+# Git files
+.git/
+.github/
+.gitignore
+.gitattributes
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+
+# Misc
+node_modules/
+coverage/
+tmp/
+.angular/
+.tmp/
+.sass-cache/
+.cache/
+.history/
+
+# Documentation
+docs/
+doc/
+documentation/
+
+# Original project structure
+projects/
+
+# Development configs
+*.development.*
+*.config.js
+*.config.ts
+!ng-package.json
+!package.json
+
+# Source files
+src/
+projects/
+scripts/
+
+# Config files
+*.config.js
+*.conf.js
+angular.json
+tsconfig.json
+tsconfig.lib.json
+tsconfig.lib.prod.json
+.editorconfig
+.gitignore
+karma.conf.js
+
+# Build files
+optimize.sh
+publish.sh
+
+# Development files
+node_modules/
+.git/
+.github/
+.vscode/
+.idea/
+*.tgz
+
+# Keep only compiled output in dist folder
+
+# Ignore everything at the root level
+/*
+
+# But include dist folder
+!/dist
+
+# Exclude unnecessary files from dist
+/dist/**/*.map
+
+# Include necessary documentation
+!/LICENSE
+!/README.md
+!/CHANGELOG.md 
